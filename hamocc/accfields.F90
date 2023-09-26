@@ -78,12 +78,14 @@
                               & jagg_Vrhof,jagg_Vpor,jlvl_agg_ws,jlvl_dynvis,jlvl_agg_stick,jlvl_agg_stickf,jlvl_agg_dmax,         &
                               & jlvl_agg_avdp,jlvl_agg_avrhop,jlvl_agg_avdC,jlvl_agg_df,jlvl_agg_b,jlvl_agg_Vrhof,jlvl_agg_Vpor
       use mo_bgcmean,     only: jlvlprefalksurf,jlvlprefdicsurf,jlvlprefo2surf,jlvlprefpo4surf,jlvlprefano3,jlvlprefano3surf,      &
-                              & jprefalksurf,jprefdicsurf,jprefo2surf,jprefpo4surf,jprefano3,jprefano3surf            
+                              & jprefalksurf,jprefdicsurf,jprefo2surf,jprefpo4surf,jprefano3,jprefano3surf,jprefsilica,            &
+                              & jprefsilicasurf,jlvlprefsilica,jlvlprefsilicasurf            
       use mo_control_bgc, only: io_stdo_bgc
       use mo_param1_bgc,  only: ialkali,ian2o,iano3,iatmco2,iatmdms,iatmn2,iatmn2o,iatmo2,icalc,idet,idms,idicsat,idoc,iiron,iopal,&
                               & ioxygen,iphosph,iphy,iprefalk,iprefdic,iprefpo4,iprefo2,isco212,isilica,izoo,                      & 
                               & irdin,irdip,irsi,iralk,iriron,irdoc,irdet,issso12,isssc12,issssil,issster
-      use mo_param1_bgc,  only: iprefalksurf,iprefdicsurf,iprefpo4surf,iprefo2surf,iprefano3,iprefano3surf
+      use mo_param1_bgc,  only: iprefalksurf,iprefdicsurf,iprefpo4surf,iprefo2surf,iprefano3,iprefano3surf,iprefsilica,            &
+                              & iprefsilicasurf
       use mo_m4ago,       only: aggregate_diagnostics,kav_dp,kav_rho_p,kav_d_C,kws_agg,kdf_agg,kstickiness_agg,kb_agg,             &
                               & kstickiness_frustule,kLmax_agg,kdynvis,kav_rhof_V,kav_por_V   
 #ifdef AGG
@@ -381,12 +383,14 @@
       call acclyr(jprefo2,ocetra(1,1,1,iprefo2),pddpo,1)
       call acclyr(jprefpo4,ocetra(1,1,1,iprefpo4),pddpo,1)
       call acclyr(jprefano3,ocetra(1,1,1,iprefano3),pddpo,1)
+      call acclyr(jprefsilica,ocetra(1,1,1,iprefsilica),pddpo,1)
       call acclyr(jprefalk,ocetra(1,1,1,iprefalk),pddpo,1)
       call acclyr(jprefdic,ocetra(1,1,1,iprefdic),pddpo,1)
       call acclyr(jdicsat,ocetra(1,1,1,idicsat),pddpo,1)
       call acclyr(jprefo2surf,ocetra(1,1,1,iprefo2surf),pddpo,1)
       call acclyr(jprefpo4surf,ocetra(1,1,1,iprefpo4surf),pddpo,1)
       call acclyr(jprefano3surf,ocetra(1,1,1,iprefano3surf),pddpo,1)
+      call acclyr(jprefsilicasurf,ocetra(1,1,1,iprefsilicasurf),pddpo,1)
       call acclyr(jprefalksurf,ocetra(1,1,1,iprefalksurf),pddpo,1)
       call acclyr(jprefdicsurf,ocetra(1,1,1,iprefdicsurf),pddpo,1)
 #ifdef natDIC
@@ -463,7 +467,8 @@
      &  jlvlano3+jlvlalkali+jlvlsilica+jlvldic+jlvldoc+jlvlpoc+jlvlcalc+&
      &  jlvlopal+jlvln2o+jlvlco3+jlvlph+jlvlomegaa+jlvlomegac+jlvlphosy+&
      &  jlvlo2sat+jlvlprefo2+jlvlprefpo4+jlvlprefalk+jlvlprefdic+       &
-     &  jlvlprefo2surf+jlvlprefpo4surf+jlvlprefalksurf+jlvlprefdicsurf+jlvlprefano3+jlvlprefano3surf+&         
+     &  jlvlprefo2surf+jlvlprefpo4surf+jlvlprefalksurf+jlvlprefdicsurf+ &
+     &  jlvlprefano3+jlvlprefano3surf+jlvlprefsilica+jlvlprefsilicasurf+&         
      &  jlvldicsat+jlvlnatdic+jlvlnatalkali+jlvlnatcalc+jlvlnatco3+     &
      &  jlvlnatomegaa+jlvlnatomegac+jlvldic13+jlvldic14+jlvld13c+       &
      &  jlvld14c+jlvlbigd14c+jlvlpoc13+jlvldoc13+jlvlcalc13+jlvlphyto13+&
@@ -502,12 +507,14 @@
           call acclvl(jlvlprefo2,ocetra(1,1,1,iprefo2),k,ind1,ind2,wghts)
           call acclvl(jlvlprefpo4,ocetra(1,1,1,iprefpo4),k,ind1,ind2,wghts)
           call acclvl(jlvlprefano3,ocetra(1,1,1,iprefano3),k,ind1,ind2,wghts)
+          call acclvl(jlvlprefsilica,ocetra(1,1,1,iprefsilica),k,ind1,ind2,wghts)
           call acclvl(jlvlprefalk,ocetra(1,1,1,iprefalk),k,ind1,ind2,wghts)
           call acclvl(jlvlprefdic,ocetra(1,1,1,iprefdic),k,ind1,ind2,wghts)
           call acclvl(jlvldicsat,ocetra(1,1,1,idicsat),k,ind1,ind2,wghts)
           call acclvl(jlvlprefo2surf,ocetra(1,1,1,iprefo2surf),k,ind1,ind2,wghts)
           call acclvl(jlvlprefpo4surf,ocetra(1,1,1,iprefpo4surf),k,ind1,ind2,wghts)
           call acclvl(jlvlprefano3surf,ocetra(1,1,1,iprefano3surf),k,ind1,ind2,wghts)
+          call acclvl(jlvlprefsilicasurf,ocetra(1,1,1,iprefsilicasurf),k,ind1,ind2,wghts)
           call acclvl(jlvlprefalksurf,ocetra(1,1,1,iprefalksurf),k,ind1,ind2,wghts)
           call acclvl(jlvlprefdicsurf,ocetra(1,1,1,iprefdicsurf),k,ind1,ind2,wghts)
 #ifdef natDIC

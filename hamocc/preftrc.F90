@@ -45,7 +45,8 @@ SUBROUTINE PREFTRC(kpie,kpje,omask)
 
   use mo_carbch,     only: ocetra
   use mo_param1_bgc, only: ialkali,ioxygen,iphosph,iprefalk,iprefdic,iprefo2,iprefpo4,isco212
-  use mo_param1_bgc, only: iprefo2surf,iprefpo4surf,iprefalksurf,iprefdicsurf,iprefano3,iprefano3surf,iano3
+  use mo_param1_bgc, only: iprefo2surf,iprefpo4surf,iprefalksurf,iprefdicsurf,iprefano3,iprefano3surf,iano3,                       &
+                         & iprefsilica,iprefsilicasurf,isilica
   use mo_vgrid,      only: kmle
 
   implicit none
@@ -61,12 +62,14 @@ SUBROUTINE PREFTRC(kpie,kpje,omask)
            ocetra(i,j,1:kmle(i,j),iprefo2)  = ocetra(i,j,1:kmle(i,j),ioxygen)
            ocetra(i,j,1:kmle(i,j),iprefpo4) = ocetra(i,j,1:kmle(i,j),iphosph)
            ocetra(i,j,1:kmle(i,j),iprefano3)= ocetra(i,j,1:kmle(i,j),iano3)
+           ocetra(i,j,1:kmle(i,j),iprefsilica)= ocetra(i,j,1:kmle(i,j),isilica)
            ocetra(i,j,1:kmle(i,j),iprefalk) = ocetra(i,j,1:kmle(i,j),ialkali)
            ocetra(i,j,1:kmle(i,j),iprefdic) = ocetra(i,j,1:kmle(i,j),isco212)
            
            ocetra(i,j,1,iprefo2surf)  = ocetra(i,j,1,ioxygen)
            ocetra(i,j,1,iprefpo4surf) = ocetra(i,j,1,iphosph)
            ocetra(i,j,1,iprefano3surf)= ocetra(i,j,1,iano3)
+           ocetra(i,j,1,iprefsilicasurf)= ocetra(i,j,1,isilica)
            ocetra(i,j,1,iprefalksurf) = ocetra(i,j,1,ialkali)
            ocetra(i,j,1,iprefdicsurf) = ocetra(i,j,1,isco212)
         endif

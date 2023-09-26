@@ -107,7 +107,8 @@
       use mo_control_bgc, only: io_stdo_bgc,ldtbgc
       use mo_param1_bgc,  only: ialkali,ian2o,iano3,icalc,idet,idicsat,idms,idoc,ifdust,igasnit,iiron,iopal,ioxygen,iphosph,iphy,&
                               & iprefalk,iprefdic,iprefo2,iprefpo4,isco212,isilica,izoo,nocetra
-      use mo_param1_bgc,  only: iprefalksurf,iprefdicsurf,iprefo2surf,iprefpo4surf,iprefano3,iprefano3surf
+      use mo_param1_bgc,  only: iprefalksurf,iprefdicsurf,iprefo2surf,iprefpo4surf,iprefano3,iprefano3surf,                        &
+                              & iprefsilica,iprefsilicasurf
       use mo_vgrid,       only: kbo
       use mo_sedmnt,      only: sedhpl
       use mo_intfcblom,   only: sedlay2,powtra2,burial2,atm2
@@ -427,12 +428,14 @@
       CALL read_netcdf_var(ncid,'prefo2',locetra(1,1,1,iprefo2),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefpo4',locetra(1,1,1,iprefpo4),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefano3',locetra(1,1,1,iprefano3),2*kpke,0,iotype)
+      CALL read_netcdf_var(ncid,'prefsilica',locetra(1,1,1,iprefsilica),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefalk',locetra(1,1,1,iprefalk),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefdic',locetra(1,1,1,iprefdic),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'dicsat',locetra(1,1,1,idicsat),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefo2surf',locetra(1,1,1,iprefo2surf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefpo4surf',locetra(1,1,1,iprefpo4surf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefano3surf',locetra(1,1,1,iprefano3surf),2*kpke,0,iotype)
+      CALL read_netcdf_var(ncid,'prefsilicasurf',locetra(1,1,1,iprefsilicasurf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefalksurf',locetra(1,1,1,iprefalksurf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefdicsurf',locetra(1,1,1,iprefdicsurf),2*kpke,0,iotype)
 

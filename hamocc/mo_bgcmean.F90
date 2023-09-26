@@ -122,7 +122,8 @@
      & LYR_PREFO2    =0    ,LYR_O2SAT     =0    ,LYR_PREFPO4   =0    ,  &
      & LYR_PREFALK   =0    ,LYR_PREFDIC   =0    ,LYR_DICSAT    =0    ,  &
      & LYR_PREFPO4SURF=0   ,LYR_PREFO2SURF=0    ,LYR_PREFALKSURF=0   ,  &
-     & LYR_PREFDICSURF=0   ,LYR_PREFANO3SURF=0  ,LYR_PREFANO3=0      ,  &  
+     & LYR_PREFDICSURF=0   ,LYR_PREFANO3SURF=0  ,LYR_PREFANO3=0      ,  & 
+     & LYR_PREFSILICA=0    ,LYR_PREFSILICASURF=0,                       &
      & LYR_CFC11     =0    ,LYR_CFC12     =0    ,LYR_SF6       =0    ,  &
      & LYR_NATDIC    =0    ,LYR_NATALKALI =0    ,LYR_NATCALC   =0    ,  &
      & LYR_NATPH     =0    ,LYR_NATOMEGAA =0    ,LYR_NATOMEGAC =0    ,  &
@@ -157,6 +158,7 @@
      & LVL_PREFDIC   =0    ,LVL_DICSAT    =0    ,                       &
      & LVL_PREFPO4SURF=0   ,LVL_PREFO2SURF=0    ,LVL_PREFDICSURF=0   ,  &
      & LVL_PREFALKSURF=0   ,LVL_PREFANO3=0      ,LVL_PREFANO3SURF=0  ,  &
+     & LVL_PREFSILICA=0    ,LVL_PREFSILICASURF=0,                       &
      & LVL_CFC11     =0    ,LVL_CFC12     =0    ,LVL_SF6       =0    ,  &
      & LVL_NATDIC    =0    ,LVL_NATALKALI =0    ,LVL_NATCALC   =0    ,  &
      & LVL_NATPH     =0    ,LVL_NATOMEGAA =0    ,LVL_NATOMEGAC =0    ,  &
@@ -243,6 +245,7 @@
      & LYR_PREFALK       ,LYR_PREFDIC       ,LYR_DICSAT        ,        &
      & LYR_PREFO2SURF    ,LYR_PREFPO4SURF   ,LYR_PREFALKSURF   ,        &
      & LYR_PREFDICSURF   ,LYR_PREFANO3      ,LYR_PREFANO3SURF  ,        &
+     & LYR_PREFSILICA    ,LYR_PREFSILICASURF,                           &         
      & LYR_CFC11         ,LYR_CFC12         ,LYR_SF6           ,        &
      & LYR_NATDIC        ,LYR_NATALKALI     ,LYR_NATCALC       ,        &
      & LYR_NATPH         ,LYR_NATOMEGAA     ,LYR_NATOMEGAC     ,        &
@@ -273,7 +276,8 @@
      & LVL_O2SAT         ,LVL_PREFPO4       ,LVL_PREFALK       ,        &
      & LVL_PREFDIC       ,LVL_DICSAT        ,                           &
      & LVL_PREFO2SURF    ,LVL_PREFPO4SURF   ,LVL_PREFALKSURF   ,        &
-     & LVL_PREFDICSURF   ,LVL_PREFANO3      ,LVL_PREFANO3SURF  ,        &          
+     & LVL_PREFDICSURF   ,LVL_PREFANO3      ,LVL_PREFANO3SURF  ,        &
+     & LVL_PREFSILICA    ,LVL_PREFSILICASURF,                           &          
      & LVL_CFC11         ,LVL_CFC12         ,LVL_SF6           ,        &
      & LVL_NATDIC        ,LVL_NATALKALI     ,LVL_NATCALC       ,        &
      & LVL_NATPH         ,LVL_NATOMEGAA     ,LVL_NATOMEGAC     ,        &
@@ -480,10 +484,12 @@
      &          jo2sat     = 0 ,                                        &
      &          jprefpo4   = 0 ,                                        &
      &          jprefano3  = 0 ,                                        &
+     &          jprefsilica= 0 ,                                        &
      &          jprefalk   = 0 ,                                        &
      &          jprefdic   = 0 ,                                        &
      &          jprefpo4surf  = 0 ,                                     &
      &          jprefano3surf = 0 ,                                     &
+     &          jprefsilicasurf = 0 ,                                   &
      &          jprefo2surf   = 0 ,                                     &
      &          jprefalksurf  = 0 ,                                     &
      &          jprefdicsurf  = 0 ,                                     &
@@ -514,10 +520,12 @@
      &          jlvlo2sat  = 0 ,                                        &
      &          jlvlprefpo4= 0 ,                                        &
      &          jlvlprefano3= 0 ,                                       &
+     &          jlvlprefsilica= 0 ,                                     &
      &          jlvlprefalk= 0 ,                                        &
      &          jlvlprefdic= 0 ,                                        &
      &          jlvlprefpo4surf = 0 ,                                   &
      &          jlvlprefano3surf= 0 ,                                   &
+     &          jlvlprefsilicasurf= 0 ,                                 &
      &          jlvlprefo2surf  = 0 ,                                   &
      &          jlvlprefalksurf = 0 ,                                   &
      &          jlvlprefdicsurf = 0 ,                                   &
@@ -1036,6 +1044,8 @@
         jprefpo4(n)=i_bsc_m3d*min(1,LYR_PREFPO4(n))
         IF (LYR_PREFANO3(n).GT.0) i_bsc_m3d=i_bsc_m3d+1
         jprefano3(n)=i_bsc_m3d*min(1,LYR_PREFANO3(n))
+        IF (LYR_PREFSILICA(n).GT.0) i_bsc_m3d=i_bsc_m3d+1
+        jprefsilica(n)=i_bsc_m3d*min(1,LYR_PREFSILICA(n))
         IF (LYR_PREFALK(n).GT.0) i_bsc_m3d=i_bsc_m3d+1
         jprefalk(n)=i_bsc_m3d*min(1,LYR_PREFALK(n))
         IF (LYR_PREFDIC(n).GT.0) i_bsc_m3d=i_bsc_m3d+1
@@ -1044,6 +1054,8 @@
         jprefpo4surf(n)=i_bsc_m3d*min(1,LYR_PREFPO4SURF(n))
         IF (LYR_PREFANO3SURF(n).GT.0) i_bsc_m3d=i_bsc_m3d+1
         jprefano3surf(n)=i_bsc_m3d*min(1,LYR_PREFANO3SURF(n))
+        IF (LYR_PREFSILICASURF(n).GT.0) i_bsc_m3d=i_bsc_m3d+1
+        jprefsilicasurf(n)=i_bsc_m3d*min(1,LYR_PREFSILICASURF(n))
         IF (LYR_PREFO2SURF(n).GT.0) i_bsc_m3d=i_bsc_m3d+1
         jprefo2surf(n)=i_bsc_m3d*min(1,LYR_PREFO2SURF(n))
         IF (LYR_PREFALKSURF(n).GT.0) i_bsc_m3d=i_bsc_m3d+1
@@ -1225,6 +1237,8 @@
         jlvlprefpo4(n)=ilvl_bsc_m3d*min(1,LVL_PREFPO4(n))
         IF (LVL_PREFANO3(n).GT.0) ilvl_bsc_m3d=ilvl_bsc_m3d+1
         jlvlprefano3(n)=ilvl_bsc_m3d*min(1,LVL_PREFANO3(n))
+        IF (LVL_PREFSILICA(n).GT.0) ilvl_bsc_m3d=ilvl_bsc_m3d+1
+        jlvlprefsilica(n)=ilvl_bsc_m3d*min(1,LVL_PREFSILICA(n))
         IF (LVL_PREFALK(n).GT.0) ilvl_bsc_m3d=ilvl_bsc_m3d+1
         jlvlprefalk(n)=ilvl_bsc_m3d*min(1,LVL_PREFALK(n))
         IF (LVL_PREFDIC(n).GT.0) ilvl_bsc_m3d=ilvl_bsc_m3d+1
@@ -1233,6 +1247,8 @@
         jlvlprefpo4surf(n)=ilvl_bsc_m3d*min(1,LVL_PREFPO4SURF(n))
         IF (LVL_PREFANO3SURF(n).GT.0) ilvl_bsc_m3d=ilvl_bsc_m3d+1
         jlvlprefano3surf(n)=ilvl_bsc_m3d*min(1,LVL_PREFANO3SURF(n))
+        IF (LVL_PREFSILICASURF(n).GT.0) ilvl_bsc_m3d=ilvl_bsc_m3d+1
+        jlvlprefsilicasurf(n)=ilvl_bsc_m3d*min(1,LVL_PREFSILICASURF(n))
         IF (LVL_PREFO2SURF(n).GT.0) ilvl_bsc_m3d=ilvl_bsc_m3d+1
         jlvlprefo2surf(n)=ilvl_bsc_m3d*min(1,LVL_PREFO2SURF(n))
         IF (LVL_PREFALKSURF(n).GT.0) ilvl_bsc_m3d=ilvl_bsc_m3d+1
