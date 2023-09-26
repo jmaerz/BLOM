@@ -56,7 +56,8 @@
       use mo_biomod,      only: fesoly 
       use mo_control_bgc, only: rmasks
       use mo_param1_bgc,  only: ialkali,ian2o,iano3,icalc,idet,idicsat,idms,idoc,ifdust,igasnit,iiron,iopal,ioxygen,iphosph,iphy,  &
-                              & iprefalk,iprefdic,iprefo2,iprefpo4,isco212,isilica,izoo 
+                              & iprefalk,iprefdic,iprefo2,iprefpo4,isco212,isilica,izoo
+      use mo_param1_bgc,  only: iprefalksurf,iprefdicsurf,iprefo2surf,iprefpo4surf,iprefano3,iprefano3surf                
       use mo_vgrid,       only: kmle,kbo
 
 #ifdef AGG
@@ -175,8 +176,15 @@
           ocetra(i,j,k,iiron)  =fesoly
           ocetra(i,j,k,iprefo2)=0.
           ocetra(i,j,k,iprefpo4)=0.
+          ocetra(i,j,k,iprefano3)=0.
           ocetra(i,j,k,iprefalk)=0.
           ocetra(i,j,k,iprefdic)=0.
+          ocetra(i,j,k,iprefo2surf)=0.
+          ocetra(i,j,k,iprefpo4surf)=0.
+          ocetra(i,j,k,iprefano3surf)=0.
+          ocetra(i,j,k,iprefalksurf)=0.
+          ocetra(i,j,k,iprefdicsurf)=0.
+
           ocetra(i,j,k,idicsat)=1.e-8
           hi(i,j,k)            =1.e-8
           co3(i,j,k)           =0.
@@ -233,8 +241,14 @@
         IF(omask(i,j) .GT. 0.5) THEN
           ocetra(i,j,1:kmle(i,j),iprefo2)  = ocetra(i,j,1:kmle(i,j),ioxygen)
           ocetra(i,j,1:kmle(i,j),iprefpo4) = ocetra(i,j,1:kmle(i,j),iphosph)
+          ocetra(i,j,1:kmle(i,j),iprefano3)= ocetra(i,j,1:kmle(i,j),iano3)
           ocetra(i,j,1:kmle(i,j),iprefalk) = ocetra(i,j,1:kmle(i,j),ialkali)
-          ocetra(i,j,1:kmle(i,j),iprefdic) = ocetra(i,j,1:kmle(i,j),isco212)
+          ocetra(i,j,1:kmle(i,j),iprefdic) = ocetra(i,j,1:kmle(i,j),isco212)   
+          ocetra(i,j,1,iprefo2)  = ocetra(i,j,1,ioxygen)
+          ocetra(i,j,1,iprefpo4) = ocetra(i,j,1,iphosph)
+          ocetra(i,j,1,iprefano3)= ocetra(i,j,1,iano3)
+          ocetra(i,j,1,iprefalk) = ocetra(i,j,1,ialkali)
+          ocetra(i,j,1,iprefdic) = ocetra(i,j,1,isco212)
         ENDIF
       ENDDO
       ENDDO

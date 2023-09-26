@@ -102,6 +102,7 @@
       use mo_control_bgc, only: io_stdo_bgc,ldtbgc,rmasko
       use mo_param1_bgc,  only: ialkali, ian2o,iano3,icalc,idet,idicsat,idms,idoc,ifdust,igasnit,iiron,iopal,ioxygen,iphosph,iphy, &
                               & iprefalk,iprefdic,iprefo2,iprefpo4,isco212,isilica,izoo,ks,nocetra
+      use mo_param1_bgc,  only: iprefalksurf,iprefdicsurf,iprefo2surf,iprefpo4surf,iprefano3,iprefano3surf
       use mo_sedmnt,      only: sedhpl
       use mo_intfcblom,   only: sedlay2,powtra2,burial2,atm2
       use mod_xc,         only: nbdy,itdm,jtdm,mnproc,iqr,jqr,xchalt
@@ -484,6 +485,10 @@
       CALL NETCDF_DEF_VARDB(ncid,7,'prefpo4',3,ncdimst,ncvarid,         &
      &    6,'mol/kg',19,'Preformed phosphate',                          &
           rmissing,28,io_stdo_bgc)
+      
+      CALL NETCDF_DEF_VARDB(ncid,8,'prefano3',3,ncdimst,ncvarid,         &
+     &    6,'mol/kg',17,'Preformed nitrate',                          &
+          rmissing,28,io_stdo_bgc)
 
       CALL NETCDF_DEF_VARDB(ncid,7,'prefalk',3,ncdimst,ncvarid,         &
      &    6,'mol/kg',20,'Preformed alkalinity',                         &
@@ -496,6 +501,26 @@
       CALL NETCDF_DEF_VARDB(ncid,6,'dicsat',3,ncdimst,ncvarid,          &
      &    6,'mol/kg',13,'Saturated dic',                                &
           rmissing,31,io_stdo_bgc)
+
+      CALL NETCDF_DEF_VARDB(ncid,10,'prefo2surf',3,ncdimst,ncvarid,          &
+     &    6,'mol/kg',16,'Preformed oxygen',                             &
+          rmissing,27,io_stdo_bgc)
+
+      CALL NETCDF_DEF_VARDB(ncid,11,'prefpo4surf',3,ncdimst,ncvarid,         &
+     &    6,'mol/kg',19,'Preformed phosphate',                          &
+          rmissing,28,io_stdo_bgc)
+      
+      CALL NETCDF_DEF_VARDB(ncid,12,'prefano3surf',3,ncdimst,ncvarid,         &
+     &    6,'mol/kg',17,'Preformed nitrate',                          &
+          rmissing,28,io_stdo_bgc)
+
+      CALL NETCDF_DEF_VARDB(ncid,11,'prefalksurf',3,ncdimst,ncvarid,         &
+     &    6,'mol/kg',20,'Preformed alkalinity',                         &
+          rmissing,29,io_stdo_bgc)
+
+      CALL NETCDF_DEF_VARDB(ncid,11,'prefdicsurf',3,ncdimst,ncvarid,         &
+     &    6,'mol/kg',13,'Preformed dic',                                &
+          rmissing,30,io_stdo_bgc)
 
 #ifdef cisonew
       CALL NETCDF_DEF_VARDB(ncid,6,'sco213',3,ncdimst,ncvarid,          &
@@ -866,9 +891,15 @@
       CALL write_netcdf_var(ncid,'iron',locetra(1,1,1,iiron),2*kpke,0)
       CALL write_netcdf_var(ncid,'prefo2',locetra(1,1,1,iprefo2),2*kpke,0)
       CALL write_netcdf_var(ncid,'prefpo4',locetra(1,1,1,iprefpo4),2*kpke,0)
+      CALL write_netcdf_var(ncid,'prefano3',locetra(1,1,1,iprefano3),2*kpke,0)
       CALL write_netcdf_var(ncid,'prefalk',locetra(1,1,1,iprefalk),2*kpke,0)
       CALL write_netcdf_var(ncid,'prefdic',locetra(1,1,1,iprefdic),2*kpke,0)
       CALL write_netcdf_var(ncid,'dicsat',locetra(1,1,1,idicsat),2*kpke,0)
+      CALL write_netcdf_var(ncid,'prefo2surf',locetra(1,1,1,iprefo2surf),2*kpke,0)
+      CALL write_netcdf_var(ncid,'prefpo4surf',locetra(1,1,1,iprefpo4surf),2*kpke,0)
+      CALL write_netcdf_var(ncid,'prefano3surf',locetra(1,1,1,iprefano3surf),2*kpke,0)
+      CALL write_netcdf_var(ncid,'prefalksurf',locetra(1,1,1,iprefalksurf),2*kpke,0)
+      CALL write_netcdf_var(ncid,'prefdicsurf',locetra(1,1,1,iprefdicsurf),2*kpke,0)
 #ifdef cisonew
       CALL write_netcdf_var(ncid,'sco213',locetra(1,1,1,isco213),2*kpke,0)
       CALL write_netcdf_var(ncid,'sco214',locetra(1,1,1,isco214),2*kpke,0)

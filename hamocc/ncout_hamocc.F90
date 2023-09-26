@@ -76,12 +76,16 @@ subroutine ncwrt_bgc(iogrp)
        &                    jlvlphosy,jlvlphyto,jlvlphyto13,jlvlpoc,            &
        &                    jlvlpoc13,jlvlprefalk,jlvlprefdic,                  &
        &                    jlvlprefo2,jlvlprefpo4,jlvlsf6,jlvlsilica,          &
+       &                    jlvlprefalksurf,jlvlprefdicsurf,jlvlprefo2surf,     &
+       &                    jlvlprefpo4surf,jlvlprefano3,jlvlprefano3surf,      &
        &                    jlvlwnos,jlvlwphy,jn2o,jsrfpn2om,                   &
        &                    jn2ofx,jndepnoyfx,jniflux,jnos,joalkfx,jo2sat,      &
        &                    jomegaa,jomegac,jopal,joxflux,joxygen,jpco2,        &
        &                    jpco2m,jkwco2khm,jco2kh,jco2khm,                    &
        &                    jph,jphosph,jphosy,jphyto,jpoc,jprefalk,            &
        &                    jprefdic,jprefo2,jprefpo4,jsilica,                  &
+       &                    jprefo2surf,jprefpo4surf,jprefalksurf,jprefdicsurf, &
+       &                    jprefano3,jprefano3surf,                            &
        &                    jsrfalkali,jsrfano3,jsrfdic,jsrfiron,               &
        &                    jsrfoxygen,jsrfphosph,jsrfphyto,jsrfsilica,jsrfph,  &
        &                    jwnos,jwphy,                                        &
@@ -91,6 +95,8 @@ subroutine ncwrt_bgc(iogrp)
        &                    lyr_opal,lyr_iron,lyr_phosy,lyr_co3,lyr_ph,         &
        &                    lyr_omegaa,lyr_omegac,lyr_n2o,lyr_prefo2,           &
        &                    lyr_o2sat,lyr_prefpo4,lyr_prefalk,                  &
+       &                    lyr_prefo2surf,lyr_prefpo4surf,lyr_prefalksurf,     &
+       &                    lyr_prefdicsurf,lyr_prefano3,lyr_prefano3surf,      &
        &                    lyr_prefdic,lyr_dicsat,                             &
        &                    lvl_dic,lvl_alkali,                                 &
        &                    lvl_phosph,lvl_oxygen,lvl_ano3,lvl_silica,          &
@@ -99,6 +105,8 @@ subroutine ncwrt_bgc(iogrp)
        &                    lvl_co3,lvl_ph,lvl_omegaa,lvl_omegac,               &
        &                    lvl_n2o,lvl_prefo2,lvl_o2sat,lvl_prefpo4,           &
        &                    lvl_prefalk,lvl_prefdic,lvl_dicsat,                 &
+       &                    lvl_prefo2surf,lvl_prefpo4surf,lvl_prefalksurf,     &
+       &                    lvl_prefdicsurf,lvl_prefano3,lvl_prefano3surf,      &
        &                    lvl_o2sat,srf_n2ofx,srf_pn2om,srf_atmco2,srf_kwco2, &
        &                    srf_kwco2khm,srf_co2kh,srf_co2khm,srf_pco2m,        &
        &                    srf_pco2,srf_dmsflux,srf_co2fxd,                    &
@@ -327,9 +335,15 @@ subroutine ncwrt_bgc(iogrp)
   call finlyr(jprefo2(iogrp),jdp(iogrp))
   call finlyr(jo2sat(iogrp),jdp(iogrp))
   call finlyr(jprefpo4(iogrp),jdp(iogrp))
+  call finlyr(jprefano3(iogrp),jdp(iogrp))
   call finlyr(jprefalk(iogrp),jdp(iogrp))
   call finlyr(jprefdic(iogrp),jdp(iogrp))
   call finlyr(jdicsat(iogrp),jdp(iogrp))
+  call finlyr(jprefpo4surf(iogrp),jdp(iogrp))
+  call finlyr(jprefano3surf(iogrp),jdp(iogrp))
+  call finlyr(jprefo2surf(iogrp),jdp(iogrp))
+  call finlyr(jprefalksurf(iogrp),jdp(iogrp))
+  call finlyr(jprefdicsurf(iogrp),jdp(iogrp))
 #ifdef cisonew
   call finlyr(jdic13(iogrp),jdp(iogrp))
   call finlyr(jdic14(iogrp),jdp(iogrp))
@@ -439,9 +453,15 @@ subroutine ncwrt_bgc(iogrp)
   call msklvl(jlvlprefo2(iogrp),depths)
   call msklvl(jlvlo2sat(iogrp),depths)
   call msklvl(jlvlprefpo4(iogrp),depths)
+  call msklvl(jlvlprefano3(iogrp),depths)
   call msklvl(jlvlprefalk(iogrp),depths)
   call msklvl(jlvlprefdic(iogrp),depths)
   call msklvl(jlvldicsat(iogrp),depths)
+  call msklvl(jlvlprefpo4surf(iogrp),depths)
+  call msklvl(jlvlprefano3surf(iogrp),depths)
+  call msklvl(jlvlprefo2surf(iogrp),depths)
+  call msklvl(jlvlprefalksurf(iogrp),depths)
+  call msklvl(jlvlprefdicsurf(iogrp),depths)
 #ifdef cisonew
   call msklvl(jlvldic13(iogrp),depths)
   call msklvl(jlvldic14(iogrp),depths)
@@ -660,9 +680,15 @@ subroutine ncwrt_bgc(iogrp)
   call wrtlyr(jprefo2(iogrp),      LYR_PREFO2(iogrp),   1e3,            0.,cmpflg,'p_o2')
   call wrtlyr(jo2sat(iogrp),       LYR_O2SAT(iogrp),    1e3,            0.,cmpflg,'satoxy')
   call wrtlyr(jprefpo4(iogrp),     LYR_PREFPO4(iogrp),  1e3,            0.,cmpflg,'p_po4')
+  call wrtlyr(jprefano3(iogrp),    LYR_PREFANO3(iogrp), 1e3,            0.,cmpflg,'p_ano3')
   call wrtlyr(jprefalk(iogrp),     LYR_PREFALK(iogrp),  1e3,            0.,cmpflg,'p_talk')
   call wrtlyr(jprefdic(iogrp),     LYR_PREFDIC(iogrp),  1e3,            0.,cmpflg,'p_dic')
   call wrtlyr(jdicsat(iogrp),      LYR_DICSAT(iogrp),   1e3,            0.,cmpflg,'sat_dic')
+  call wrtlyr(jprefpo4surf(iogrp), LYR_PREFPO4SURF(iogrp), 1e3,         0.,cmpflg,'p_po4s')
+  call wrtlyr(jprefano3surf(iogrp),LYR_PREFANO3SURF(iogrp),1e3,         0.,cmpflg,'p_ano3s')
+  call wrtlyr(jprefo2surf(iogrp),  LYR_PREFO2SURF(iogrp),  1e3,         0.,cmpflg,'p_o2s')
+  call wrtlyr(jprefalksurf(iogrp), LYR_PREFALKSURF(iogrp), 1e3,         0.,cmpflg,'p_talks')
+  call wrtlyr(jprefdicsurf(iogrp), LYR_PREFDICSURF(iogrp), 1e3,         0.,cmpflg,'p_dics')
 #ifdef cisonew
   call wrtlyr(jdic13(iogrp),       LYR_DIC13(iogrp),    1.e3,           0.,cmpflg,'dissic13')
   call wrtlyr(jdic14(iogrp),       LYR_DIC14(iogrp),    1.e3*c14fac,    0.,cmpflg,'dissic14')
@@ -755,9 +781,15 @@ subroutine ncwrt_bgc(iogrp)
   call wrtlvl(jlvlprefo2(iogrp),   LVL_PREFO2(iogrp),   rnacc*1e3,      0.,cmpflg,'p_o2lvl')
   call wrtlvl(jlvlo2sat(iogrp),    LVL_O2SAT(iogrp),    rnacc*1e3,      0.,cmpflg,'satoxylvl')
   call wrtlvl(jlvlprefpo4(iogrp),  LVL_PREFPO4(iogrp),  rnacc*1e3,      0.,cmpflg,'p_po4lvl')
+  call wrtlvl(jlvlprefano3(iogrp), LVL_PREFANO3(iogrp), rnacc*1e3,      0.,cmpflg,'p_ano3lvl')
   call wrtlvl(jlvlprefalk(iogrp),  LVL_PREFALK(iogrp),  rnacc*1e3,      0.,cmpflg,'p_talklvl')
   call wrtlvl(jlvlprefdic(iogrp),  LVL_PREFDIC(iogrp),  rnacc*1e3,      0.,cmpflg,'p_diclvl')
   call wrtlvl(jlvldicsat(iogrp),   LVL_DICSAT(iogrp),   rnacc*1e3,      0.,cmpflg,'sat_diclvl')
+  call wrtlvl(jlvlprefpo4surf(iogrp), LVL_PREFPO4SURF(iogrp),  rnacc*1e3,0.,cmpflg,'p_po4slvl')
+  call wrtlvl(jlvlprefano3surf(iogrp),LVL_PREFANO3SURF(iogrp), rnacc*1e3,0.,cmpflg,'p_ano3slvl')
+  call wrtlvl(jlvlprefo2surf(iogrp),  LVL_PREFO2SURF(iogrp),   rnacc*1e3,0.,cmpflg,'p_o2slvl')
+  call wrtlvl(jlvlprefalksurf(iogrp), LVL_PREFALKSURF(iogrp),  rnacc*1e3,0.,cmpflg,'p_talkslvl')
+  call wrtlvl(jlvlprefdicsurf(iogrp), LVL_PREFDICSURF(iogrp),  rnacc*1e3,0.,cmpflg,'p_dicslvl')
 #ifdef cisonew
   call wrtlvl(jlvldic13(iogrp),    LVL_DIC13(iogrp),    rnacc*1.e3,     0.,cmpflg,'dissic13lvl')
   call wrtlvl(jlvldic14(iogrp),    LVL_DIC14(iogrp),    rnacc*1.e3*c14fac,0.,cmpflg,'dissic14lvl')
@@ -1008,9 +1040,15 @@ subroutine ncwrt_bgc(iogrp)
   call inilyr(jprefo2(iogrp),0.)
   call inilyr(jo2sat(iogrp),0.)
   call inilyr(jprefpo4(iogrp),0.)
+  call inilyr(jprefano3(iogrp),0.)
   call inilyr(jprefalk(iogrp),0.)
   call inilyr(jprefdic(iogrp),0.)
   call inilyr(jdicsat(iogrp),0.)
+  call inilyr(jprefpo4surf(iogrp),0.)
+  call inilyr(jprefano3surf(iogrp),0.)
+  call inilyr(jprefo2surf(iogrp),0.)
+  call inilyr(jprefalksurf(iogrp),0.)
+  call inilyr(jprefdicsurf(iogrp),0.)
 #ifdef cisonew
   call inilyr(jdic13(iogrp),0.)
   call inilyr(jdic14(iogrp),0.)
@@ -1102,9 +1140,15 @@ subroutine ncwrt_bgc(iogrp)
   call inilvl(jlvlprefo2(iogrp),0.)
   call inilvl(jlvlo2sat(iogrp),0.)
   call inilvl(jlvlprefpo4(iogrp),0.)
+  call inilvl(jlvlprefano3(iogrp),0.)
   call inilvl(jlvlprefalk(iogrp),0.)
   call inilvl(jlvlprefdic(iogrp),0.)
   call inilvl(jlvldicsat(iogrp),0.)
+  call inilvl(jlvlprefpo4surf(iogrp),0.)
+  call inilvl(jlvlprefano3surf(iogrp),0.)
+  call inilvl(jlvlprefo2surf(iogrp),0.)
+  call inilvl(jlvlprefalksurf(iogrp),0.)
+  call inilvl(jlvlprefdicsurf(iogrp),0.)
 #ifdef cisonew
   call inilvl(jlvldic13(iogrp),0.)
   call inilvl(jlvldic14(iogrp),0.)
@@ -1238,11 +1282,15 @@ subroutine hamoccvardef(iogrp,timeunits,calendar,cmpflg)
        &   lyr_phyto,lyr_grazer,lyr_poc,lyr_calc,lyr_opal,lyr_iron,             &
        &   lyr_phosy,lyr_co3,lyr_ph,lyr_omegaa,lyr_omegac,lyr_n2o,              &
        &   lyr_prefo2,lyr_o2sat,lyr_prefpo4,lyr_prefalk,lyr_prefdic,            &
+       &   lyr_prefo2surf,lyr_prefpo4surf,lyr_prefalksurf,lyr_prefdicsurf,      &
+       &   lyr_prefano3,lyr_prefano3surf,                                       &
        &   lyr_dicsat,lvl_dic,lvl_alkali,lvl_phosph,lvl_oxygen,lvl_ano3,        &
        &   lvl_silica,lvl_doc,lvl_phyto,lvl_grazer,lvl_poc,lvl_calc,            &
        &   lvl_opal,lvl_iron,lvl_phosy,lvl_co3,lvl_ph,lvl_omegaa,               &
        &   lvl_omegac,lvl_n2o,lvl_prefo2,lvl_o2sat,lvl_prefpo4,                 &
        &   lvl_prefalk,lvl_prefdic,lvl_dicsat,                                  &
+       &   lvl_prefpo4surf,lvl_prefalksurf,lvl_prefdicsurf,lvl_prefo2surf,      &
+       &   lvl_prefano3,lvl_prefano3surf,                                       & 
        &   lyr_agg_ws,lyr_dynvis,lyr_agg_stick,                                 &
        &   lyr_agg_stickf,lyr_agg_dmax,lyr_agg_avdp,                            &
        &   lyr_agg_avrhop,lyr_agg_avdC,lyr_agg_df,                              &
@@ -1628,12 +1676,24 @@ subroutine hamoccvardef(iogrp,timeunits,calendar,cmpflg)
        &   'satoxy','Saturated oxygen',' ','mol O2 m-3',1)
   call ncdefvar3d(LYR_PREFPO4(iogrp),cmpflg,'p',                                &
        &   'p_po4','Preformed phosphorus',' ','mol P m-3',1)
+  call ncdefvar3d(LYR_PREFANO3(iogrp),cmpflg,'p',                               &
+       &   'p_ano3','Preformed nitrate',' ','mol N m-3',1)
   call ncdefvar3d(LYR_PREFALK(iogrp),cmpflg,'p',                                &
        &   'p_talk','Preformed alkalinity',' ','eq m-3',1)
   call ncdefvar3d(LYR_PREFDIC(iogrp),cmpflg,'p',                                &
        &   'p_dic','Preformed DIC',' ','mol C m-3',1)
   call ncdefvar3d(LYR_DICSAT(iogrp),cmpflg,'p',                                 &
        &   'sat_dic','Saturated DIC',' ','mol C m-3',1)
+  call ncdefvar3d(LYR_PREFPO4SURF(iogrp),cmpflg,'p',                            &
+       &   'p_po4s','Preformed phosphorus surface init',' ','mol P m-3',1)
+  call ncdefvar3d(LYR_PREFANO3SURF(iogrp),cmpflg,'p',                           &
+       &   'p_ano3s','Preformed nitrate surface init',' ','mol N m-3',1)
+  call ncdefvar3d(LYR_PREFO2SURF(iogrp),cmpflg,'p',                             &
+       &   'p_o2s','Preformed oxygen surface init',' ','mol O2 m-3',1)
+  call ncdefvar3d(LYR_PREFALKSURF(iogrp),cmpflg,'p',                            &
+       &   'p_talks','Preformed alkalinity surface init',' ','eq m-3',1)
+  call ncdefvar3d(LYR_PREFDICSURF(iogrp),cmpflg,'p',                            &
+       &   'p_dics','Preformed DIC surface init',' ','mol C m-3',1)
 #ifdef cisonew
   call ncdefvar3d(LYR_DIC13(iogrp),cmpflg,'p',                                  &
        &   'dissic13','Dissolved C13',' ','mol 13C m-3',1)
@@ -1806,12 +1866,24 @@ subroutine hamoccvardef(iogrp,timeunits,calendar,cmpflg)
        &   'satoxylvl','Saturated oxygen',' ','mol O2 m-3',2)
   call ncdefvar3d(LVL_PREFPO4(iogrp),cmpflg,'p',                                &
        &   'p_po4lvl','Preformed phosphorus',' ','mol P m-3',2)
+  call ncdefvar3d(LVL_PREFANO3(iogrp),cmpflg,'p',                               &
+       &   'p_ano3lvl','Preformed nitrate',' ','mol N m-3',2)
   call ncdefvar3d(LVL_PREFALK(iogrp),cmpflg,'p',                                &
        &   'p_talklvl','Preformed alkalinity',' ','eq m-3',2)
   call ncdefvar3d(LVL_PREFDIC(iogrp),cmpflg,'p',                                &
        &   'p_diclvl','Preformed DIC',' ','mol C m-3',2)
   call ncdefvar3d(LVL_DICSAT(iogrp),cmpflg,'p',                                 &
        &   'sat_diclvl','Saturated DIC',' ','mol C m-3',2)
+  call ncdefvar3d(LVL_PREFPO4SURF(iogrp),cmpflg,'p',                            &
+       &   'p_po4slvl','Preformed phosphorus surface init',' ','mol P m-3',2)
+  call ncdefvar3d(LVL_PREFANO3SURF(iogrp),cmpflg,'p',                           &
+       &   'p_ano3slvl','Preformed nitrate surface init',' ','mol N m-3',2)
+  call ncdefvar3d(LVL_PREFO2SURF(iogrp),cmpflg,'p',                             &
+       &   'p_o2slvl','Preformed oxygen surface init',' ','mol O2 m-3',2)
+  call ncdefvar3d(LVL_PREFALKSURF(iogrp),cmpflg,'p',                            &
+       &   'p_talkslvl','Preformed alkalinity surface init',' ','eq m-3',2)
+  call ncdefvar3d(LVL_PREFDICSURF(iogrp),cmpflg,'p',                            &
+       &   'p_dicslvl','Preformed DIC surface init',' ','mol C m-3',2)
 #ifdef cisonew
   call ncdefvar3d(LVL_DIC13(iogrp),cmpflg,'p',                                  &
        &   'dissic13lvl','Dissolved C13',' ','mol 13C m-3',2)
