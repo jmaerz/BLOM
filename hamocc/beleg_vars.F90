@@ -244,11 +244,11 @@
           ocetra(i,j,1:kmle(i,j),iprefano3)= ocetra(i,j,1:kmle(i,j),iano3)
           ocetra(i,j,1:kmle(i,j),iprefalk) = ocetra(i,j,1:kmle(i,j),ialkali)
           ocetra(i,j,1:kmle(i,j),iprefdic) = ocetra(i,j,1:kmle(i,j),isco212)   
-          ocetra(i,j,1,iprefo2)  = ocetra(i,j,1,ioxygen)
-          ocetra(i,j,1,iprefpo4) = ocetra(i,j,1,iphosph)
-          ocetra(i,j,1,iprefano3)= ocetra(i,j,1,iano3)
-          ocetra(i,j,1,iprefalk) = ocetra(i,j,1,ialkali)
-          ocetra(i,j,1,iprefdic) = ocetra(i,j,1,isco212)
+          ocetra(i,j,1,iprefo2surf)     = ocetra(i,j,1,ioxygen)
+          ocetra(i,j,1,iprefpo4surf)    = ocetra(i,j,1,iphosph)
+          ocetra(i,j,1,iprefano3surf)   = ocetra(i,j,1,iano3)
+          ocetra(i,j,1,iprefalksurf)    = ocetra(i,j,1,ialkali)
+          ocetra(i,j,1,iprefdicsurf)    = ocetra(i,j,1,isco212)
         ENDIF
       ENDDO
       ENDDO
