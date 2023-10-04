@@ -159,7 +159,7 @@
       INTEGER   :: restday                           !  day of restart file
       INTEGER   :: restdtoce                         !  time step number from bgc ocean file
       INTEGER   :: idate(5),i,j,k
-      logical   :: lread_cfc,lread_nat,lread_iso,lread_atm,lread_bro,lread_extn
+      logical   :: lread_cfc,lread_nat,lread_iso,lread_atm,lread_bro,lread_extn,lread_pref
 #ifdef cisonew
       REAL :: rco213,rco214,alpha14,beta13,beta14,d14cat
 #endif
@@ -405,6 +405,24 @@
       ENDIF
 #endif
 
+
+      lread_pref=.true.
+      IF(IOTYPE==0) THEN
+        if(mnproc==1) ncstat=nf90_inq_varid(ncid,'prefo2surf',ncvarid)
+        call xcbcst(ncstat)
+        if(ncstat.ne.nf90_noerr) lread_pref=.false.
+      ELSE IF(IOTYPE==1) THEN
+#ifdef PNETCDF
+        ncstat=nfmpi_inq_varid(ncid,'prefo2surf',ncvarid)
+        if(ncstat.ne.nf_noerr) lread_pref=.false.
+#endif
+      ENDIF
+      IF(mnproc==1 .and. .not. lread_pref) THEN
+        WRITE(io_stdo_bgc,*) ' '
+        WRITE(io_stdo_bgc,*) 'AUFR_BGC info: preformed surface tracers not in restart file '
+        WRITE(io_stdo_bgc,*) 'Initialising preformed tracers from scratch'
+      ENDIF
+
 !
 ! Read restart data : ocean aquateous tracer
 !                
@@ -427,18 +445,19 @@
       CALL read_netcdf_var(ncid,'iron',locetra(1,1,1,iiron),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefo2',locetra(1,1,1,iprefo2),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefpo4',locetra(1,1,1,iprefpo4),2*kpke,0,iotype)
-      CALL read_netcdf_var(ncid,'prefano3',locetra(1,1,1,iprefano3),2*kpke,0,iotype)
-      CALL read_netcdf_var(ncid,'prefsilica',locetra(1,1,1,iprefsilica),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefalk',locetra(1,1,1,iprefalk),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefdic',locetra(1,1,1,iprefdic),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'dicsat',locetra(1,1,1,idicsat),2*kpke,0,iotype)
+      IF(lread_pref) THEN
+      CALL read_netcdf_var(ncid,'prefsilica',locetra(1,1,1,iprefsilica),2*kpke,0,iotype)
+      CALL read_netcdf_var(ncid,'prefano3',locetra(1,1,1,iprefano3),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefo2surf',locetra(1,1,1,iprefo2surf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefpo4surf',locetra(1,1,1,iprefpo4surf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefano3surf',locetra(1,1,1,iprefano3surf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefsilicasurf',locetra(1,1,1,iprefsilicasurf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefalksurf',locetra(1,1,1,iprefalksurf),2*kpke,0,iotype)
       CALL read_netcdf_var(ncid,'prefdicsurf',locetra(1,1,1,iprefdicsurf),2*kpke,0,iotype)
-
+      ENDIF
 #ifdef cisonew
       IF(lread_iso) THEN
       CALL read_netcdf_var(ncid,'sco213',locetra(1,1,1,isco213),2*kpke,0,iotype)
