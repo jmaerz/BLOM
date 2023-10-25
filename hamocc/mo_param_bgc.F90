@@ -76,7 +76,12 @@ module mo_param_bgc
       use mo_param1_bgc,  only: iatmnh3,iatmn2o
       use mo_carbch,      only: atm_nh3
       use mo_extNwatercol,only: extNwatercol_param_init,extNwatercol_param_update,extNwatercol_param_write,                        &
-                                rano3denit,rano2anmx,rano2denit,ran2odenit,rdnra,ranh4nitr,rano2nitr
+                              & rano3denit,rano2anmx,rano2denit,ran2odenit,rdnra,ranh4nitr,rano2nitr,                              &
+                              & bkphyanh4,bkphyano3,bkphosph,bkiron,                                                               &
+                              & q10ano3denit,sc_ano3denit,bkano3denit,q10anmx,alphaanmx,bkoxanmx,bkano2anmx,bkanh4anmx,            &
+                              & q10ano2denit,bkoxano2denit,bkano2denit,q10an2odenit,bkoxan2odenit,bkan2odenit,q10dnra,bkoxdnra,    &
+                              & bkdnra,q10anh4nitr,bkoxamox,bkanh4nitr,q10ano2nitr,bkoxnitr,bkano2nitr
+
       use mo_extNsediment,only: extNsediment_param_init,extNsediment_param_update,extNsediment_param_write,                        &
                                 rano3denit_sed,rano2anmx_sed,rano2denit_sed,ran2odenit_sed,rdnra_sed,ranh4nitr_sed,rano2nitr_sed
 #endif
@@ -432,6 +437,10 @@ module mo_param_bgc
                        & rano3denit,rano2anmx,rano2denit,ran2odenit,rdnra,ranh4nitr,rano2nitr,                                     &
                        & rano3denit_sed,rano2anmx_sed,rano2denit_sed,ran2odenit_sed,rdnra_sed,ranh4nitr_sed,rano2nitr_sed,         &
                        & atm_nh3,                                                                                                  &
+                       & bkphyanh4,bkphyano3,bkphosph,bkiron,                                                                      &
+                       & q10ano3denit,sc_ano3denit,bkano3denit,q10anmx,alphaanmx,bkoxanmx,bkano2anmx,bkanh4anmx,                   &
+                       & q10ano2denit,bkoxano2denit,bkano2denit,q10an2odenit,bkoxan2odenit,bkan2odenit,q10dnra,bkoxdnra,           &
+                       & bkdnra,q10anh4nitr,bkoxamox,bkanh4nitr,q10ano2nitr,bkoxnitr,bkano2nitr,                                   &
 #endif
                        & wcal,wopal,atm_n2o
 
