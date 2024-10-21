@@ -31,7 +31,7 @@ contains
 
     use mod_xc,         only: idm,jdm,kdm,nbdy
     use mod_time,       only: date,nday_of_year,nstep,nstep_in_day
-    use mod_grid,       only: plat
+    use mod_grid,       only: plat,depths
     use mod_state,      only: temp,saln
     use mod_forcing,    only: swa,slp,abswnd,atmco2,flxco2,flxdms,atmbrf,flxbrf,                   &
                               atmn2o,flxn2o,atmnh3,flxnh3,atmnhxdep,atmnoydep
@@ -83,7 +83,7 @@ contains
          &          bgc_rho,plat,omask,dust,rivflx,ndep,oafx,pi_ph,swa,ficem,slp,abswnd,           &
          &          temp(1-nbdy,1-nbdy,1+nn),saln(1-nbdy,1-nbdy,1+nn),                             &
          &          atmco2,flxco2,flxdms,atmbrf,flxbrf,                                            &
-         &          atmn2o,flxn2o,atmnh3,flxnh3)
+         &          atmn2o,flxn2o,atmnh3,flxnh3,depths)
 
     !
     ! --- accumulate fields and write output

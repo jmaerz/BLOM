@@ -38,7 +38,7 @@ module mo_param_bgc
                             use_BOXATM,use_CFC,use_PBGC_CK_TIMESTEP,                               &
                             use_sedbypass,with_dmsph,use_PBGC_OCNP_TIMESTEP,ocn_co2_type,use_M4AGO,&
                             do_ndep_coupled,do_n2onh3_coupled,use_extNcycle,                       &
-                            lkwrbioz_off
+                            lkwrbioz_off,lsedquality
   use mod_xc,         only: mnproc
 
   implicit none
@@ -121,7 +121,7 @@ module mo_param_bgc
           & bkoxamox_sed,bkanh4nitr_sed,bkamoxn2o_sed,bkyamox_sed,               &
           & rano2nitr_sed,q10ano2nitr_sed,Trefano2nitr_sed,bkoxnitr_sed,         &
           & bkano2nitr_sed,n2omaxy_sed,n2oybeta_sed,NOB2AOAy_sed,bn2o_sed,       &
-          & mufn2o_sed,POM_remin_q10_sed, POM_remin_Tref_sed,bkox_drempoc_sed
+          & mufn2o_sed,POM_remin_q10_sed, POM_remin_Tref_sed,bkox_drempoc_sed,kbath
 
 
   !********************************************************************
@@ -356,6 +356,7 @@ module mo_param_bgc
   real, protected :: NOB2AOAy      = 0.44     ! Ratio of NOB versus AOA yield per energy source ~0.043/0.098 according to Zakem et al. 2022
 
   !SEDIMENT
+  real, protected :: kbath = 350.                 ! quadratic MM parameter for depth-dep remin
       ! === Ammonification in the sediment
   real, protected :: POM_remin_q10_sed  = 2.1     ! ammonification Q10 in sediment
   real, protected :: POM_remin_Tref_sed = 10.     ! ammonification Tref in sediment
@@ -613,7 +614,7 @@ contains
                          bkoxan2odenit_sed,bkan2odenit_sed,q10dnra_sed,          &
                          bkoxdnra_sed,bkdnra_sed,q10anh4nitr_sed,                &
                          bkoxamox_sed,bkanh4nitr_sed,q10ano2nitr_sed,            &
-                         bkoxnitr_sed,bkano2nitr_sed
+                         bkoxnitr_sed,bkano2nitr_sed,lsedquality,kbath
 
     if (mnproc.eq.1) then
       write(io_stdo_bgc,*)
@@ -1104,6 +1105,8 @@ contains
       call pinfo_add_entry('bkoxnitr_sed',      bkoxnitr_sed)
       call pinfo_add_entry('bkano2nitr_sed',    bkano2nitr_sed)
       call pinfo_add_entry('NOB2AOAy_sed',      NOB2AOAy_sed)
+      call cinfo_add_entry('lsedquality',       lsedquality)
+      call pinfo_add_entry('kbath',             kbath)
     endif
   end subroutine write_parambgc
 

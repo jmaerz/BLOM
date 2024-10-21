@@ -28,7 +28,7 @@ contains
   subroutine hamocc4bcm(kpie,kpje,kpke,kbnd,kplyear,kplmon,kplday,kldtday,pdlxp,pdlyp,pddpo,prho,  &
                         pglat,omask, dust,rivin,ndep,oafx,pi_ph,pfswr,psicomo,ppao,pfu10,ptho,psao,&
                         patmco2,pflxco2,pflxdms,patmbromo,pflxbromo,                               &
-                        patmn2o,pflxn2o,patmnh3,pflxnh3)
+                        patmn2o,pflxn2o,patmnh3,pflxnh3,pbath)
 
     !***********************************************************************************************
     ! Main routine of iHAMOCC.
@@ -108,6 +108,7 @@ contains
     real,    intent(out) :: pflxn2o(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd)      ! Nitrous oxide flux [kg N2O m-2 s-1].
     real,    intent(in)  :: patmnh3(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd)      ! atmospheric ammonia concentration [ppt] used in fully coupled mode
     real,    intent(out) :: pflxnh3(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd)      ! Ammonia flux [kg NH3 m-2 s-1].
+    real,    intent(in)  :: pbath(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd)        ! bathymetry fields - water depth [m]
 
     ! Local variables
     integer :: i,j,k,l
@@ -340,7 +341,7 @@ contains
           lspin=.false.
         endif
 
-        call powach(kpie,kpje,kpke,kbnd,prho,omask,psao,ptho,lspin)
+        call powach(kpie,kpje,kpke,kbnd,prho,omask,psao,ptho,pbath,lspin)
 
       enddo
 

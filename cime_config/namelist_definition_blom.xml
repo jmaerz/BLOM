@@ -3883,6 +3883,26 @@
     <desc>Logical switch to activate ocean alkalinization, for expert users only, further options are set in the namelist group bgcoafx</desc>
   </entry>
 
+  <entry id="lsedquality">
+    <type>logical</type>
+    <category>bgcnml</category>
+    <group>bgcnml</group>
+    <values>
+      <value>.false.</value>
+    </values>
+    <desc>Switch for depth-dependent remin. in sediment (extended N-cycle)</desc>
+  </entry>
+
+  <entry id="kbath">
+    <type>real</type>
+    <category>bgcparams</category>
+    <group>bgcparams</group>
+    <values>
+      <value>350</value>
+    </values>
+    <desc>SEDIMENT: MM parameter for depth-dep of ammonification (extended N-cycle; [m])</desc>
+  </entry>
+
   <entry id="do_sedspinup" modify_via_xml="HAMOCC_SEDSPINUP">
     <type>logical</type>
     <category>bgcnml</category>

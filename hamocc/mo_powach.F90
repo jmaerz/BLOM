@@ -25,14 +25,14 @@ module mo_powach
 
 contains
 
-  subroutine powach(kpie,kpje,kpke,kbnd,prho,omask,psao,ptho,lspin)
+  subroutine powach(kpie,kpje,kpke,kbnd,prho,omask,psao,ptho,pbath,lspin)
 
     !***********************************************************************************************
     ! Ernst Maier-Reimer,    *MPI-Met, HH*    10.04.01
     ! Modified: S.Legutke,   *MPI-MaD, HH*    10.04.01
     !***********************************************************************************************
 
-    use mo_control_bgc, only: dtbgc,use_cisonew,use_extNcycle
+    use mo_control_bgc, only: dtbgc,use_cisonew,use_extNcycle,lsedquality
     use mo_param1_bgc,  only: ioxygen,ipowaal,ipowaic,ipowaox,ipowaph,ipowasi,ipown2,ipowno3,      &
                               isilica,isssc12,issso12,issssil,issster,ks,ipowc13,ipowc14,isssc13,  &
                               isssc14,issso13,issso14,safediv,ipownh4
@@ -40,7 +40,7 @@ contains
     use mo_chemcon,     only: calcon
     use mo_param_bgc,   only: rnit,rcar,rdnit1,rdnit2,ro2ut,disso_sil,silsat,disso_poc,sed_denit,  &
                             & disso_caco3,ro2utammo,                                               &
-                            & POM_remin_q10_sed,POM_remin_Tref_sed,bkox_drempoc_sed
+                            & POM_remin_q10_sed,POM_remin_Tref_sed,bkox_drempoc_sed,kbath
     use mo_sedmnt,      only: porwat,porsol,powtra,produs,prcaca,prorca,seddw,sedhpl,sedlay,       &
                               silpro,pror13,pror14,prca13,prca14
     use mo_vgrid,       only: kbo,bolay
@@ -59,6 +59,7 @@ contains
     real,    intent(in) :: omask(kpie,kpje)                             ! land/ocean mask.
     real,    intent(in) :: psao(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd,kpke) ! salinity [psu].
     real,    intent(in) :: ptho(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd,kpke) ! Pot. temperature [deg C].
+    real,    intent(in) :: pbath(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd)     ! bathymetry fields - water depth [m]
     logical, intent(in) :: lspin
 
     ! Local variables
@@ -227,6 +228,7 @@ contains
             ! O2 and T-dep
             ex_disso_poc = dissot*powtra(i,j,1,ipowaox)/(powtra(i,j,1,ipowaox) + bkox_drempoc_sed) & ! oxygen limitation
                          &       *POM_remin_q10_sed**((ptho(i,j,kbo(i,j))-POM_remin_Tref_sed)/10.)   ! T-dep
+            ex_disso_poc = merge(ex_disso_poc*(1.-pbath(i,j)**2/(pbath(i,j)**2+kbath**2)),ex_disso_poc,lsedquality)
             solrat(i,1) = ( sedlay(i,j,1,issso12) + prorca(i,j)                                    &
                         & / (porsol(i,j,1) * seddw(1)) )                                           &
                         & * ro2utammo * ex_disso_poc / (1. + ex_disso_poc * undsa)                 &
@@ -251,6 +253,7 @@ contains
               ! extended nitrogen cycle - 140mol O2/mol POP O2-consumption
               ex_disso_poc = dissot*powtra(i,j,k,ipowaox)/(powtra(i,j,k,ipowaox)+bkox_drempoc_sed) & ! oxygen limitation
                            &       *POM_remin_q10_sed**((ptho(i,j,kbo(i,j))-POM_remin_Tref_sed)/10.)   ! T-dep
+              ex_disso_poc = merge(ex_disso_poc*(1.-pbath(i,j)**2/(pbath(i,j)**2+kbath**2)),ex_disso_poc,lsedquality)
               if (k > 1) solrat(i,k) = sedlay(i,j,k,issso12) * ro2utammo * ex_disso_poc            &
                                      & /(1. + ex_disso_poc*undsa) * porsol(i,j,k) / porwat(i,j,k)
             endif
@@ -294,6 +297,7 @@ contains
             else
               ex_disso_poc = dissot * powtra(i,j,k,ipowaox)/(powtra(i,j,k,ipowaox) + bkox_drempoc_sed) & ! oxygen limitation
                            &        * POM_remin_q10_sed**((ptho(i,j,kbo(i,j))-POM_remin_Tref_sed)/10.)   ! T-dep
+              ex_disso_poc = merge(ex_disso_poc*(1.-pbath(i,j)**2/(pbath(i,j)**2+kbath**2)),ex_disso_poc,lsedquality)
               solrat(i,k) = sedlay(i,j,k,issso12) * ex_disso_poc/(1. + ex_disso_poc*sediso(i,k))
             endif
             posol = sediso(i,k)*solrat(i,k)
