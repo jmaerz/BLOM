@@ -616,7 +616,7 @@ contains
                          bkoxan2odenit_sed,bkan2odenit_sed,q10dnra_sed,          &
                          bkoxdnra_sed,bkdnra_sed,q10anh4nitr_sed,                &
                          bkoxamox_sed,bkanh4nitr_sed,q10ano2nitr_sed,            &
-                         bkoxnitr_sed,bkano2nitr_sed,lsedquality,kbath
+                         bkoxnitr_sed,bkano2nitr_sed,kbath
 
     if (mnproc.eq.1) then
       write(io_stdo_bgc,*)
