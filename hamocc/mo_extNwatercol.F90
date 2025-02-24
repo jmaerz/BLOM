@@ -46,7 +46,7 @@ module mo_extNwatercol
   !     - mo_extNsediment.F90
   !
   !****************************************************************
-  use mo_vgrid,       only: dp_min
+  use mo_vgrid,       only: dp_min,kwrbioz
   use mod_xc,         only: mnproc
   use mo_param1_bgc,  only: ialkali,ianh4,iano2,ian2o,iano3,idet,igasnit,iiron,ioxygen,iphosph,    &
                           & isco212
@@ -65,6 +65,7 @@ module mo_extNwatercol
                           & bkphyanh4,bkphyano3,bkphosph,bkiron,ro2utammo,max_limiter
   use mo_biomod,      only: nitr_NH4,nitr_NO2,nitr_N2O_prod,nitr_NH4_OM,nitr_NO2_OM,denit_NO3,     &
                           & denit_NO2,denit_N2O,DNRA_NO2,anmx_N2_prod,anmx_OM_prod
+  use mo_control_bgc, only: lkwrbioz_off
   implicit none
 
   private
@@ -105,7 +106,7 @@ contains
     !$OMP                     no2fdetamox)
     do j = 1,kpje
       do i = 1,kpie
-        do k = 1,kpke
+        do k = merge(1,kwrbioz(i,j)+1,lkwrbioz_off),kpke
           if(pddpo(i,j,k) > dp_min .and. omask(i,j) > 0.5) then
             potdnh4amox = 0.
             fn2o        = 0.
@@ -223,7 +224,7 @@ contains
     !$OMP PARALLEL DO PRIVATE(i,k,Tdep,O2inhib,nutlim,ano3new,ano3denit,temp)
     do j = 1,kpje
       do i = 1,kpie
-        do k = 1,kpke
+        do k = merge(1,kwrbioz(i,j)+1,lkwrbioz_off),kpke
           if(pddpo(i,j,k) > dp_min .and. omask(i,j) > 0.5) then
             temp      = merge(ptho(i,j,k),10.,ptho(i,j,k) < 40.)
             Tdep      = q10ano3denit**((temp-Trefano3denit)/10.)
@@ -273,7 +274,7 @@ contains
     !$OMP PARALLEL DO PRIVATE(i,k,Tdep,O2inhib,nut1lim,nut2lim,ano2new,ano2anmx,temp)
     do j = 1,kpje
       do i = 1,kpie
-        do k = 1,kpke
+        do k = merge(1,kwrbioz(i,j)+1,lkwrbioz_off),kpke
           if(pddpo(i,j,k) > dp_min .and. omask(i,j) > 0.5) then
             temp     = merge(ptho(i,j,k),10.,ptho(i,j,k) < 40.)
             Tdep     = q10anmx**((temp-Trefanmx)/10.)
@@ -343,7 +344,7 @@ contains
 
     do j = 1,kpje
       do i = 1,kpie
-        do k = 1,kpke
+        do k = merge(1,kwrbioz(i,j)+1,lkwrbioz_off),kpke
           if(pddpo(i,j,k) > dp_min .and. omask(i,j) > 0.5) then
             potddet       = 0.
             an2odenit     = 0.
