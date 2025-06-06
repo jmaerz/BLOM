@@ -64,7 +64,7 @@ contains
 
     use mod_xc,           only: mnproc
     use mo_carbch,        only: ocetra,satoxy,hi,co2star,nutlim_diag,inutlim_fe,inutlim_phosph,    &
-                              & inutlim_n,zeu_nutlim_diag
+                              & inutlim_n,zeu_nutlim_diag,H2Obudget
     use mo_sedmnt,        only: prcaca,produs,prorca,silpro,pror13,pror14,prca13,prca14
     use mo_param_bgc,     only: drempoc,drempoc_anaerob,bkox_drempoc,dremn2o,dremopal,dremsul,     &
                                 dyphy,ecan,epsher,fesoly,                                          &
@@ -231,6 +231,7 @@ contains
     phosy3d  (:,:,:) = 0.
     nutlim_diag(:,:,:,:) = 0.
     zeu_nutlim_diag(:,:,:) = 0.
+    H2Obudget(:,:,:) = 0.
 
     if (use_BROMO) then
       int_chbr3_uv  (:,:) = 0.

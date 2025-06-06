@@ -91,6 +91,8 @@ module mo_carbch
   real, dimension (:,:,:),   allocatable, public :: natomegaa
   real, dimension (:,:,:),   allocatable, public :: natomegac
 
+  real, dimension (:,:,:),   allocatable, public :: H2Obudget
+
   real, public :: atm_co2
   real, public :: atm_cfc11_nh, atm_cfc11_sh
   real, public :: atm_cfc12_nh, atm_cfc12_sh
@@ -180,6 +182,16 @@ contains
     if(errstat.ne.0) stop 'not enough memory OmegaA, OmegaC'
     OmegaA(:,:,:) = 0.0
     OmegaC(:,:,:) = 0.0
+
+    if (mnproc.eq.1) then
+      write(io_stdo_bgc,*)'Memory allocation for variable H2Obudget ...'
+      write(io_stdo_bgc,*)'First dimension    : ',kpie
+      write(io_stdo_bgc,*)'Second dimension   : ',kpje
+      write(io_stdo_bgc,*)'Third dimension    : ',kpke
+    endif
+    allocate (H2Obudget(kpie,kpje,kpke),stat=errstat)
+    if(errstat.ne.0) stop 'not enough memory H2Obudget'
+    H2Obudget(:,:,:) = 0.0
 
     if (use_natDIC) then
       if (mnproc.eq.1) then

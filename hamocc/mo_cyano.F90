@@ -45,7 +45,7 @@ contains
     !***********************************************************************************************
 
     use mo_vgrid,       only: kmle,kwrbioz
-    use mo_carbch,      only: ocetra
+    use mo_carbch,      only: ocetra,H2Obudget
     use mo_param_bgc,   only: bluefix,rnit,tf0,tf1,tf2,tff
     use mo_param1_bgc,  only: ialkali,iano3,igasnit,iphosph,ioxygen,inatalkali,ianh4
     use mo_biomod,      only: intnfix
@@ -101,6 +101,8 @@ contains
                   ! Nitrogen fixation followed by remineralisation and nitrification decreases
                   ! alkalinity by 1 mole per mole nitrogen fixed (Wolf-Gladrow et al. 2007)
                   dalk = -dansp
+                  ! The H2O-O2 used needs to be accounted for: 4xO2 per 16xNO3 produced
+                  H2Obudget(i,j,k) = H2Obudget(i,j,k) + dansp*0.25
                 else
                   oldocetra = ocetra(i,j,k,ianh4)
                   ocetra(i,j,k,ianh4) = ocetra(i,j,k,ianh4)*(1. - bluefix*nfixtfac)                &
@@ -108,6 +110,10 @@ contains
                   dansp = ocetra(i,j,k,ianh4) - oldocetra
                   dox   = dansp*0.75
                   dalk  = dansp
+                  ! NH4 is accounted for in the O2 inventory by 0.5*NH4, hence, the
+                  ! rest of consumed H2O-O2 needs accounting in the time step inventory
+                  ! 4xO2/16xNH4 is not represented explicitly
+                  H2Obudget(i,j,k) = H2Obudget(i,j,k) - dansp*0.25
                 endif
                 ocetra(i,j,k,igasnit) = ocetra(i,j,k,igasnit) - dansp*0.5
 

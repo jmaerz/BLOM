@@ -40,7 +40,8 @@ contains
     !***********************************************************************************************
 
     use mod_xc,         only: mnproc,ips,nbdy,xcsum
-    use mo_carbch,      only: atm,atmflx,co3,hi,ndepnoyflx,rivinflx,ocetra,sedfluxo,ndepnhxflx
+    use mo_carbch,      only: atm,atmflx,co3,hi,ndepnoyflx,rivinflx,ocetra,sedfluxo,ndepnhxflx,    &
+                            & H2Obudget
     use mo_sedmnt,      only: prcaca,prorca,silpro
     use mo_biomod,      only: expoor,expoca,exposi
     use mo_param_bgc,   only: rcar,rnit,rcar_tdoclc,rcar_tdochc,rnit_tdoclc,rnit_tdochc,           &
@@ -95,6 +96,7 @@ contains
     real :: zocetratoc(nocetra)      ! Mean concentration of ocean racers
     !--- additional ocean tracer
     real :: zhito                    ! Total hydrogen ion tracer
+    real :: zh2o                     ! Consumed H2O
     real :: zco3to                   ! Total dissolved carbonate (CO3) tracer
     real :: ODZvol                   ! ODZ volume (O2threshold: 20 mumol)
     !--- alkalinity of the first layer
@@ -238,6 +240,7 @@ contains
     !----------------------------------------------------------------------
     zhito  = 0.
     zco3to = 0.
+    zh2o   = 0.
 
     ztmp1(:,:)=0.0
     ztmp2(:,:)=0.0
@@ -272,6 +275,20 @@ contains
     enddo
     call xcsum(ODZvol,ztmp1,ips)
 
+    ! H2O budget
+    ztmp1(:,:)=0.0
+    do k=1,kpke
+      do j=1,kpje
+        do i=1,kpie
+          if (ddpo(i,j,k) > dp_min) then
+            vol = dlxp(i,j)*dlyp(i,j)*ddpo(i,j,k)
+            ztmp1(i,j) = ztmp1(i,j) + omask(i,j)*H2Obudget(i,j,k)*vol
+          endif
+        enddo
+      enddo
+    enddo
+    call xcsum(zh2o,ztmp1,ips)
+    !write(io_stdo_bgc,*) 'zh2o ',zh2o
     !=== alkalinity of the first layer
     !--------------------------------------------------------------------
     zvoltop = 0.
@@ -453,7 +470,7 @@ contains
          + zpowtratot(ipowno3)*1.5+zpowtratot(ipowaic)                    &
          + zpowtratot(ipowaox)+zpowtratot(ipowaph)*2                      &
          - sndepnoyflux*1.5                                               &
-         + zprorca*(-24.)+zprcaca
+         + zprorca*(-24.)+zprcaca + zh2o
 
     if (use_BOXATM) then
       totaloxy = totaloxy + zatmo2*ppm2con+zatmco2*ppm2con
