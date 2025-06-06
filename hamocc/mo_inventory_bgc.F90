@@ -270,8 +270,7 @@ contains
         enddo
       enddo
     enddo
-    call xcsum(ODZvol,ztmp2,ips)
-
+    call xcsum(ODZvol,ztmp1,ips)
 
     !=== alkalinity of the first layer
     !--------------------------------------------------------------------
@@ -462,7 +461,13 @@ contains
       totaloxy = totaloxy + so2flux+sn2oflux*0.5+co2flux
     endif
     if (use_extNcycle) then
-      totaloxy = totaloxy + zocetratot(iano2)+zpowtratot(ipown2o)*0.5+zpowtratot(ipowno2)
+      totaloxy = totaloxy + zocetratot(iano2)+zpowtratot(ipown2o)*0.5+zpowtratot(ipowno2)          &
+                          ! The next line accounts for non-explicitly used/consumed
+                          ! water-bound oxygen when water is used/produced during process
+                          ! The inventory calculations are based on the NO3-POM conversion
+                          ! (see above the factor -24, which accounts for the not explicitly
+                          ! represented water part used during photosynthetic POM production
+                          -0.5*(zocetratot(ianh4)+snh3flux+zpowtratot(ipownh4)-sndepnhxflux)
     endif
 
     if (do_rivinpt) then
