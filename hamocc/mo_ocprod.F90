@@ -876,7 +876,7 @@ contains
               ocetra(i,j,k,ioxygen) = ocetra(i,j,k,ioxygen) - ro2utammo*remin
               remin_aerob(i,j,k)  = remin_aerob(i,j,k)+remin*rnit ! kmol/NH4/dtb - remin to NH4 from various sources
             endif
-            
+
             if (use_river2omip) then
               ocetra(i,j,k,iphosph) = ocetra(i,j,k,iphosph) + tdoclc_rem + tdochc_rem
               if (.not. use_extNcycle) then
@@ -900,7 +900,7 @@ contains
                                     &                       + tdochc_rem*rcar_tdochc
               ocetra(i,j,k,iiron) = ocetra(i,j,k,iiron)     + (tdoclc_rem+tdochc_rem)*riron
             endif
-            
+
             ocetra(i,j,k,isco212) = ocetra(i,j,k,isco212)+rcar*remin
             ocetra(i,j,k,iiron) = ocetra(i,j,k,iiron)+remin*riron           &
                  &             -relaxfe*max(ocetra(i,j,k,iiron)-fesoly,0.)
@@ -1028,6 +1028,9 @@ contains
                   ocetra(i,j,k,idet13) = ocetra(i,j,k,idet13)-rem13
                   ocetra(i,j,k,idet14) = ocetra(i,j,k,idet14)-rem14
                 endif
+
+                ! Account for un-resolved H2O-O2 in inventory
+                H2Obudget(i,j,k) = H2Obudget(i,j,k) + rdnit1*0.25*remin
 
                 ! nitrate loss through denitrification in kmol N m-2
                 dz = pddpo(i,j,k)
