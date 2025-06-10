@@ -50,7 +50,7 @@ module mo_extNwatercol
   use mod_xc,         only: mnproc
   use mo_param1_bgc,  only: ialkali,ianh4,iano2,ian2o,iano3,idet,igasnit,iiron,ioxygen,iphosph,    &
                           & isco212
-  use mo_carbch,      only: ocetra
+  use mo_carbch,      only: ocetra,H2Obudget
   use mo_param_bgc,   only: riron,rnit,rcar,rnoi,                                                  &
                           & q10ano3denit,sc_ano3denit,Trefano3denit,rano3denit,bkano3denit,        &
                           & rano2anmx,q10anmx,Trefanmx,alphaanmx,bkoxanmx,bkano2anmx,bkanh4anmx,   &
@@ -197,6 +197,10 @@ contains
             nitr_N2O_prod(i,j,k)  = 0.5*fn2o*amox      ! kmol N2O/m3/dtb - N2O production during aerob ammonium oxidation
             nitr_NH4_OM(i,j,k)    = rnoi*fdetamox*amox ! kmol P/m3/dtb   - organic matter production during aerob NH4 oxidation
             nitr_NO2_OM(i,j,k)    = rnoi*fdetnitr*nitr ! kmol P/m3/dtb   - organic matter production during aerob NO2 oxidation
+
+            ! O2 inventory (needs rechecking!)
+            H2Obudget(i,j,k) = H2Obudget(i,j,k) + (-16.-fno2-1.25*fn2o)*rnoi*fdetamox*amox - 16.*rnoi*fdetnitr*nitr
+
           endif
         enddo
       enddo
