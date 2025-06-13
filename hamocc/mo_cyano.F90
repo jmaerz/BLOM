@@ -44,6 +44,7 @@ contains
     ! - added reduction of alkalinity through N-fixation
     !***********************************************************************************************
 
+    use mo_kind,        only: rp
     use mo_vgrid,       only: kmle,kwrbioz
     use mo_carbch,      only: ocetra,H2Obudget
     use mo_param_bgc,   only: bluefix,rnit,tf0,tf1,tf2,tff
@@ -56,16 +57,16 @@ contains
     integer, intent(in) :: kpje                                          ! 2nd dimension of model grid.
     integer, intent(in) :: kpke                                          ! 3rd (vertical) dimension of model grid.
     integer, intent(in) :: kbnd                                          ! nb of halo grid points
-    real,    intent(in) :: pddpo(kpie,kpje,kpke)                         ! size of grid cell (3rd dimension) [m].
-    real,    intent(in) :: omask(kpie,kpje)                              ! land/ocean mask
-    real,    intent(in) :: ptho(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd,kpke)  ! potential temperature.
+    real(rp),intent(in) :: pddpo(kpie,kpje,kpke)                         ! size of grid cell (3rd dimension) [m].
+    real(rp),intent(in) :: omask(kpie,kpje)                              ! land/ocean mask
+    real(rp),intent(in) :: ptho(1-kbnd:kpie+kbnd,1-kbnd:kpje+kbnd,kpke)  ! potential temperature.
 
     ! Local variables
-    integer :: i,j,k
-    real    :: oldocetra,anavail,dansp,dox,dalk
-    real    :: ttemp,nfixtfac
+    integer  :: i,j,k
+    real(rp) :: oldocetra,anavail,dansp,dox,dalk
+    real(rp) :: ttemp,nfixtfac
 
-    intnfix(:,:)=0.0
+    intnfix(:,:)=0.0_rp
 
     !
     ! N-fixation by cyano bacteria (followed by remineralisation and nitrification),
@@ -74,7 +75,7 @@ contains
     !
     do j=1,kpje
       do i=1,kpie
-        if (omask(i,j) > 0.5) then
+        if (omask(i,j) > 0.5_rp) then
           do k=1,kwrbioz(i,j) ! bluefix only in euphotic zone
             if (ocetra(i,j,k,iano3) < (rnit*ocetra(i,j,k,iphosph))) then
               if (use_extNcycle) then
@@ -85,19 +86,19 @@ contains
               endif
               if(anavail < (rnit*ocetra(i,j,k,iphosph))) then
 
-                ttemp = min(40.,max(-3.,ptho(i,j,k)))
+                ttemp = min(40._rp,max(-3._rp,ptho(i,j,k)))
 
                 ! Temperature dependence of nitrogen fixation, Kriest and Oschlies 2015.
-                nfixtfac = max(0.0,tf2*ttemp*ttemp + tf1*ttemp + tf0)/tff
+                nfixtfac = max(0.0_rp,tf2*ttemp*ttemp + tf1*ttemp + tf0)/tff
 
                 if (.not. use_extNcycle) then
                   oldocetra = ocetra(i,j,k,iano3)
-                  ocetra(i,j,k,iano3) = ocetra(i,j,k,iano3)*(1. - bluefix*nfixtfac)                &
+                  ocetra(i,j,k,iano3) = ocetra(i,j,k,iano3)*(1._rp - bluefix*nfixtfac)             &
                                       + bluefix*nfixtfac*rnit*ocetra(i,j,k,iphosph)
                   dansp = ocetra(i,j,k,iano3) - oldocetra
                   ! Note: to fix one mole N2 requires: N2+H2O+y*O2 = 2* HNO3 <-> y=2.5 mole O2.
                   ! I.e., to release one mole HNO3 = H+ + NO3- requires 1.25 mole O2
-                  dox  = -dansp*1.25
+                  dox  = -dansp*1.25_rp
                   ! Nitrogen fixation followed by remineralisation and nitrification decreases
                   ! alkalinity by 1 mole per mole nitrogen fixed (Wolf-Gladrow et al. 2007)
                   dalk = -dansp
@@ -105,17 +106,17 @@ contains
                   H2Obudget(i,j,k) = H2Obudget(i,j,k) + dansp*0.25
                 else
                   oldocetra = ocetra(i,j,k,ianh4)
-                  ocetra(i,j,k,ianh4) = ocetra(i,j,k,ianh4)*(1. - bluefix*nfixtfac)                &
+                  ocetra(i,j,k,ianh4) = ocetra(i,j,k,ianh4)*(1._rp - bluefix*nfixtfac)             &
                                       + bluefix*nfixtfac*rnit*ocetra(i,j,k,iphosph)
                   dansp = ocetra(i,j,k,ianh4) - oldocetra
-                  dox   = dansp*0.75
+                  dox   = dansp*0.75_rp
                   dalk  = dansp
                   ! NH4 is accounted for in the O2 inventory by 0.5*NH4, hence, the
                   ! rest of consumed H2O-O2 needs accounting in the time step inventory
                   ! 4xO2/16xNH4 is not represented explicitly
                   H2Obudget(i,j,k) = H2Obudget(i,j,k) - dansp*0.25
                 endif
-                ocetra(i,j,k,igasnit) = ocetra(i,j,k,igasnit) - dansp*0.5
+                ocetra(i,j,k,igasnit) = ocetra(i,j,k,igasnit) - dansp*0.5_rp
 
                 ocetra(i,j,k,ioxygen) = ocetra(i,j,k,ioxygen) + dox
 

@@ -19,10 +19,10 @@
 module mo_apply_rivin
 
   !*************************************************************************************************
-  ! Routines for applying riverine nutrient and carbon input data. 
+  ! Routines for applying riverine nutrient and carbon input data.
   !
-  ! Riverine carbon and nutrient input is activated through a logical switch 'do_rivinpt' read 
-  ! from HAMOCC's bgcnml namelist. When coupled to NorESM, this is achieved by setting 
+  ! Riverine carbon and nutrient input is activated through a logical switch 'do_rivinpt' read
+  ! from HAMOCC's bgcnml namelist. When coupled to NorESM, this is achieved by setting
   ! BLOM_RIVER_NUTRIENTS to TRUE in env_run.xml.
   !
   ! S. Gao,              *Gfi, Bergen*    19.08.2017
@@ -39,6 +39,8 @@ module mo_apply_rivin
   !
   !*************************************************************************************************
 
+  use mo_kind,        only: rp
+
   implicit none
   private
 
@@ -49,7 +51,7 @@ module mo_apply_rivin
   ! Martin, 1995; Lohan and Bruland, 2006; Sholkovitz, 1978]. dFe_frac is the
   ! fraction of dissolved iron that enters the coastal ocean.
 
-  real, parameter :: dFe_frac = 0.01  ! assume 99% loss of dissolved iron
+  real(rp), parameter :: dFe_frac = 0.01_rp  ! assume 99% loss of dissolved iron
 
 contains
 
@@ -58,44 +60,44 @@ contains
     !  Apply riverine input to oceanic tracer fields
     !***********************************************************************************************
 
-    use mo_control_bgc, only: dtb,do_rivinpt,use_cisonew,use_river2omip
+    use mo_control_bgc, only: dtb,do_rivinpt,use_cisonew,use_river2omip,use_DOMclasses
     use mo_param_bgc,   only: rcar_tdochc
     use mo_param1_bgc,  only: nriv,irdin,irdip,irsi,iralk,iriron,irdoc,irtdoc,irdet,               &
                               iano3,iphosph,isilica,isco212,iiron,idoc,itdoc_lc,itdoc_hc,idet,     &
                               ialkali,inatsco212,inatalkali,itdoc_lc13,itdoc_hc13,itdoc_lc14,      &
-                              itdoc_hc14
+                              itdoc_hc14,idocsl,idocsr,idocr
     use mo_param1_bgc,  only: idet13,idet14,idoc13,idoc14,isco213,isco214,safediv
     use mo_vgrid,       only: kmle
     use mo_carbch,      only: ocetra,rivinflx
     use mo_control_bgc, only: use_natDIC
 
     ! Arguments
-    integer,intent(in) :: kpie                       ! 1st dimension of model grid.
-    integer,intent(in) :: kpje                       ! 2nd dimension of model grid.
-    integer,intent(in) :: kpke                       ! 3rd (vertical) dimension of model grid.
-    real,   intent(in) :: pddpo(kpie,kpje,kpke)      ! size of grid cell (3rd dimension) [m].
-    real,   intent(in) :: omask(kpie,kpje)           ! ocean mask
-    real,   intent(in) :: rivin(kpie,kpje,nriv)      ! riverine input field [kmol m-2 yr-1]
+    integer,  intent(in) :: kpie                       ! 1st dimension of model grid.
+    integer,  intent(in) :: kpje                       ! 2nd dimension of model grid.
+    integer,  intent(in) :: kpke                       ! 3rd (vertical) dimension of model grid.
+    real(rp), intent(in) :: pddpo(kpie,kpje,kpke)      ! size of grid cell (3rd dimension) [m].
+    real(rp), intent(in) :: omask(kpie,kpje)           ! ocean mask
+    real(rp), intent(in) :: rivin(kpie,kpje,nriv)      ! riverine input field [kmol m-2 yr-1]
 
     ! local variables
-    integer :: i,j,k
-    real    :: fdt,volij
+    integer  :: i,j,k
+    real(rp) :: fdt,volij
 
     ! rivinflx stores the applied n-deposition flux for inventory calculations
     ! and output
-    rivinflx(:,:,:) = 0.0
+    rivinflx(:,:,:) = 0.0_rp
 
     if (.not. do_rivinpt) return
 
-    fdt = dtb/365.
+    fdt = dtb/365._rp
 
     !$OMP PARALLEL DO PRIVATE(i,k,volij)
     do j=1,kpje
       do i=1,kpie
-        if(omask(i,j) > 0.5) then
+        if(omask(i,j) > 0.5_rp) then
 
           ! Distribute riverine inputs over the model mixed layer
-          volij = 0.
+          volij = 0._rp
           do k=1,kmle(i,j)
             volij=volij+pddpo(i,j,k)
           enddo
@@ -200,8 +202,22 @@ contains
           else
             ! DIC is updated using the assumptions that a_t=a_c+a_n and DIC=a_c (a_t: total
             ! alkalinity, a_c: carbonate alkalinity, a_n: contribution of nutrients to a_t).
-            ocetra(i,j,1:kmle(i,j),idoc)    = ocetra(i,j,1:kmle(i,j),idoc)                         &
+            if (use_DOMclasses) then
+              ! JT Here assume 10% (labile), 10% (semi-labile), 40% (semi-refractory), and
+              ! 40% (refractory) distribution following Kulinski et al. (2016)
+              ! https://doi.org/10.1016/j.marchem.2016.03.002
+              ocetra(i,j,1:kmle(i,j),idoc)  = ocetra(i,j,1:kmle(i,j),idoc)                         &
+                 &                          + 0.1_rp*rivin(i,j,irdoc)*fdt/volij
+              ocetra(i,j,1:kmle(i,j),idocsl)= ocetra(i,j,1:kmle(i,j),idocsl)                       &
+                 &                          + 0.1_rp*rivin(i,j,irdoc)*fdt/volij
+              ocetra(i,j,1:kmle(i,j),idocsr)= ocetra(i,j,1:kmle(i,j),idocsr)                       &
+                 &                          + 0.4_rp*rivin(i,j,irdoc)*fdt/volij
+              ocetra(i,j,1:kmle(i,j),idocr) = ocetra(i,j,1:kmle(i,j),idocr)                        &
+                 &                          + 0.4_rp*rivin(i,j,irdoc)*fdt/volij
+            else
+              ocetra(i,j,1:kmle(i,j),idoc)  = ocetra(i,j,1:kmle(i,j),idoc)                         &
                  &                          + rivin(i,j,irdoc)*fdt/volij
+            endif
             ocetra(i,j,1:kmle(i,j),idet)    = ocetra(i,j,1:kmle(i,j),idet)                         &
                  &                          + rivin(i,j,irdet)*fdt/volij
             ocetra(i,j,1:kmle(i,j),isco212) = ocetra(i,j,1:kmle(i,j),isco212)                      &
@@ -227,7 +243,7 @@ contains
           if (use_river2omip) then
             rivinflx(i,j,irtdoc) = rivin(i,j,irtdoc)*fdt
           else
-            rivinflx(i,j,irtdoc) = 0.
+            rivinflx(i,j,irtdoc) = 0._rp
           endif
           rivinflx(i,j,irdet)  = rivin(i,j,irdet)*fdt
         endif

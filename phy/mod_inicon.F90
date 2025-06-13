@@ -357,9 +357,10 @@ contains
     integer :: errstat, k_woa, i, j, k, l
     logical :: filling_failed
 
-    if (trim(sigref_spec) /= 'namelist') then
+    if (trim(sigref_spec) /= 'function' .and. &
+        trim(sigref_spec) /= 'namelist') then
       if (mnproc == 1) &
-        write(lp,*) 'Initial conditions from WOA require sigref_spec == ''namelist''!'
+        write(lp,*) 'Initial conditions from WOA require sigref_spec == ''function'' or sigref_spec == ''namelist''!'
       call xcstop('(inicon_woa_file)')
              stop '(inicon_woa_file)'
     endif
@@ -400,6 +401,9 @@ contains
           endif
         enddo
       enddo
+      if (mnproc == 1) then
+         write(lp,*)'calling fill_global at k = ',k
+      end if
       call fill_global(t_woa_mval, t_woa_fval, halo_ps, &
                        t_woa(1-nbdy,1-nbdy,k))
       call fill_global(s_woa_mval, s_woa_fval, halo_ps, &
@@ -464,7 +468,6 @@ contains
         ! Create source arrays of practical salinity (sp_src), potential
         ! temperature (pt_src) and source interface depths bounded by model
         ! depth (z_src). Fill remaining missing values from above.
-        z_src(1) = z_src_ref(1)
         do k = 1, kdm_woa
           if (t_woa(i,j,k) /= t_woa_fval .and. &
               t_woa(i,j,k) /= t_woa_mval .and. &
@@ -478,13 +481,15 @@ contains
             sp_src(k) = sp_src(k-1)
             pt_src(k) = pt_src(k-1)
           endif
-          z_src(k+1) = max(z_src_ref(k+1), - depths(i,j))
+          z_src(k) = max(z_src_ref(k), - depths(i,j))
         enddo
+        z_src(kdm_woa+1) = - depths(i,j)
 
         ! Bound destination interface depths by model depth.
-        do k = 1, kk+1
+        do k = 1, kk
           z_dst(k) = max(z_dst_ref(k), - depths(i,j))
         enddo
+        z_dst(kk+1) = - depths(i,j)
 
         ! Prepare vertical reconstruction and remapping.
 
@@ -856,6 +861,10 @@ contains
     ! Local variables.
     integer :: errstat, ncid, varid
     logical :: woa_icfile, layer_icfile
+
+    if (woa_nuopc_provided) then
+       woa_icfile = .true.
+    end if
 
     if (.not. woa_nuopc_provided) then
       ! Check type of initial condition file.

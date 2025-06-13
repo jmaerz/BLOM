@@ -43,6 +43,7 @@ contains
 
     use mod_xc,           only: mnproc
     use mod_dia,          only: ddm
+    use mo_kind,          only: rp
     use mo_carbch,        only: atm,atmflx,co2fxd,co2fxu,co3,hi,kwco2sol,                          &
                                 ndepnoyflx,ndepnhxflx,dustflx,rivinflx,oalkflx,ocetra,             &
                                 omegaa,omegac,fco2,pco2,xco2,pco2_gex,satoxy,sedfluxo,sedfluxb,    &
@@ -57,6 +58,8 @@ contains
                                 dustflx0500,dustflx1000,dustflx2000,dustflx4000,                   &
                                 expoca,expoor,exposi,intdms_bac,intdms_uv,intdmsprod,              &
                                 intdnit,intnfix,intphosy,phosy3d,                                  &
+                                int_exudl,int_exudsl,int_excrl,int_excrsl,                         &
+                                int_docl_rem,int_docsl_rem,int_docsr_rem,int_docr_rem,             &
                                 int_chbr3_prod,int_chbr3_uv,asize3d,eps3d,wnumb,wmass,             &
                                 nitr_NH4,nitr_NO2,nitr_N2O_prod,nitr_NH4_OM,nitr_NO2_OM,denit_NO3, &
                                 denit_NO2,denit_N2O,DNRA_NO2,anmx_N2_prod,anmx_OM_prod,phosy_NH4,  &
@@ -78,6 +81,8 @@ contains
                                 jdmsprod,jdoc,jdp,jeps,jexpoca,jtdoc_lc,jtdoc_hc,                  &
                                 jexport,jexposi,jgrazer,jintdnit,jintnfix,jintphosy,               &
                                 jiralk,jirdet,jirdin,jirdip,jirdoc,jirtdoc,jiriron,                &
+                                jintexudl,jintexudsl,jintexcrl,jintexcrsl,jintdocl_rem,            &
+                                jintdocsl_rem,jintdocsr_rem,jintdocr_rem,                          &
                                 jiron,jirsi,jkwco2,jlvlalkali,jlvlano3,jlvlasize,                  &
                                 jlvlbigd14c,jlvlbromo,jlvlcalc,jlvlcalc13,                         &
                                 jlvlcfc11,jlvlcfc12,jlvlco3,jlvld13c,jlvld14c,                     &
@@ -90,6 +95,7 @@ contains
                                 jlvlph,jlvlphosph,jlvlphosy,jlvlphyto,jlvlphyto13,                 &
                                 jlvlpoc,jlvlpoc13,jlvlprefalk,jlvlprefdic,                         &
                                 jlvlprefo2,jlvlprefpo4,jlvlsf6,jlvlsilica,                         &
+                                jlvlprefdoc,jlvlprefdocsl,jlvlprefdocsr,jlvlprefdocr,              &
                                 jlvlwnos,jlvlwphy,jn2flux,jn2o,jn2oflux,jn2ofx,                    &
                                 jprorca,jprcaca,jsilpro,jpodiic,jpodial,jpodiph,                   &
                                 jpodiox,jpodin2,jpodino3,jpodisi,jndepnoy,jndepnhx,joalk,          &
@@ -97,6 +103,7 @@ contains
                                 joxflux,joxygen,jfco2,jpco2,jxco2,jpco2_gex,jkwco2sol,jco2sol,     &
                                 jph,jphosph,jphosy,jphyto,jpoc,jprefalk,                           &
                                 jprefdic,jprefo2,jprefpo4,jsilica,jsrfalkali,                      &
+                                jprefdoc,jprefdocsl,jprefdocsr,jprefdocr,                          &
                                 jsrfano3,jsrfdic,jsrfiron,jsrfoxygen,jsrfphosph,                   &
                                 jsrfphyto,jsrfsilica,jsrfph,jwnos,jwphy,jndepnoyfx,jtdustfx,       &
                                 jsfefx,joalkfx,nbgc,nacc_bgc,bgcwrt,glb_inventory,                 &
@@ -109,6 +116,7 @@ contains
                                 jlvlnatph,jnatalkali,jnatcalc,jnatco2fx,jnatco3,                   &
                                 jnatdic,jnatomegaa,jnatomegac,jnatpco2,jnatph,                     &
                                 jsrfnatalk,jsrfnatdic,jsrfnatph,                                   &
+                                jdocsl,jdocsr,jdocr,jlvldocsl,jlvldocsr,jlvldocr,                  &
                                 jbursssc12,jburssso12,jburssssil,jburssster,                       &
                                 jpowaal,jpowaic,jpowaox,jpowaph,jpowaph,jpowasi,jpown2,            &
                                 jpowno3,jsssc12,jssso12,jssssil,jssster,accbur,accsdm,             &
@@ -142,15 +150,17 @@ contains
     use mo_control_bgc,   only: io_stdo_bgc,dtb,use_BROMO,use_AGG,use_WLIN,use_natDIC,             &
                                 use_CFC,use_sedbypass,use_cisonew,use_BOXATM,use_M4AGO,            &
                                 use_extNcycle,use_pref_tracers,use_shelfsea_res_time,              &
-                                use_sediment_quality,use_river2omip
+                                use_sediment_quality,use_river2omip,use_DOMclasses
     use mo_param1_bgc,    only: ialkali,ian2o,iano3,iatmco2,iatmdms,iatmn2,iatmn2o,iatmo2,         &
                                 icalc,idet,idms,idicsat,idoc,iiron,iopal,itdoc_lc,itdoc_hc,        &
                                 ioxygen,iphosph,iphy,iprefalk,iprefdic,                            &
                                 iprefpo4,iprefo2,isco212,isilica,izoo,itdust,isfe,                 &
+                                iprefdoc,iprefdocsl,iprefdocsr,iprefdocr,                          &
                                 irdin,irdip,irsi,iralk,iriron,irdoc,irdet,inos,iatmbromo,ibromo,   &
                                 iatmf11,iatmf12,iatmsf6,icfc11,icfc12,isf6,irtdoc,                 &
                                 iatmc13,iatmc14,icalc13,idet13,idoc13,iphy13,isco213,isco214,      &
                                 izoo13,safediv,itdoc_lc13,itdoc_hc13,                              &
+                                idocsl,idocsr,idocr,                                               &
                                 iatmnco2,inatalkali,inatcalc,inatsco212,                           &
                                 ipowaal,ipowaic,ipowaox,ipowaph,ipowasi,                           &
                                 ipown2,ipowno3,isssc12,issso12,issssil,issster,                    &
@@ -174,35 +184,35 @@ contains
     integer , intent(in) :: kpie                  ! 1st dimension of model grid.
     integer , intent(in) :: kpje                  ! 2nd dimension of model grid.
     integer , intent(in) :: kpke                  ! 3rd (vertical) dimension of model grid.
-    real    , intent(in) :: pdlxp(kpie,kpje)      ! size of grid cell (1st dimension) [m].
-    real    , intent(in) :: pdlyp(kpie,kpje)      ! size of grid cell (2nd dimension) [m].
-    real    , intent(in) :: pddpo(kpie,kpje,kpke) ! size of grid cell (3rd dimension) [m].
-    real    , intent(in) :: omask(kpie,kpje)      ! land/ocean mask
+    real(rp), intent(in) :: pdlxp(kpie,kpje)      ! size of grid cell (1st dimension) [m].
+    real(rp), intent(in) :: pdlyp(kpie,kpje)      ! size of grid cell (2nd dimension) [m].
+    real(rp), intent(in) :: pddpo(kpie,kpje,kpke) ! size of grid cell (3rd dimension) [m].
+    real(rp), intent(in) :: omask(kpie,kpje)      ! land/ocean mask
 
     ! Local variables
-    integer :: i,j,k,l
-    integer :: ind1(kpie,kpje),ind2(kpie,kpje)
-    real    :: wghts(kpie,kpje,ddm)
-    real    :: di12C                   ! cisonew
-    real    :: d13C(kpie,kpje,kpke)    ! cisonew
-    real    :: d14C(kpie,kpje,kpke)    ! cisonew
-    real    :: bigd14C(kpie,kpje,kpke) ! cisonew
+    integer  :: i,j,k,l
+    integer  :: ind1(kpie,kpje),ind2(kpie,kpje)
+    real(rp) :: wghts(kpie,kpje,ddm)
+    real(rp) :: di12C                   ! cisonew
+    real(rp) :: d13C(kpie,kpje,kpke)    ! cisonew
+    real(rp) :: d14C(kpie,kpje,kpke)    ! cisonew
+    real(rp) :: bigd14C(kpie,kpje,kpke) ! cisonew
 
     if (use_cisonew) then
       ! Calculation d13C, d14C and Dd14C: Delta notation for output
-      d13C(:,:,:)=0.
-      d14C(:,:,:)=0.
-      bigd14C(:,:,:)=0.
+      d13C(:,:,:)=0._rp
+      d14C(:,:,:)=0._rp
+      bigd14C(:,:,:)=0._rp
       do k=1,kpke
         do j=1,kpje
           do i=1,kpie
-            if(omask(i,j).gt.0.5.and.pddpo(i,j,k).gt.dp_min) then
+            if(omask(i,j).gt.0.5_rp.and.pddpo(i,j,k).gt.dp_min) then
 
-              di12C=max(ocetra(i,j,k,isco212)-ocetra(i,j,k,isco213),0.)
-              d13C(i,j,k)=(ocetra(i,j,k,isco213)/(di12C+safediv)/re1312-1.)*1000.
+              di12C=max(ocetra(i,j,k,isco212)-ocetra(i,j,k,isco213),0._rp)
+              d13C(i,j,k)=(ocetra(i,j,k,isco213)/(di12C+safediv)/re1312-1._rp)*1000._rp
               d14C(i,j,k)=(ocetra(i,j,k,isco214)*c14fac/                                           &
-                          (ocetra(i,j,k,isco212)+safediv)/re14to-1.)*1000.
-              bigd14C(i,j,k)=d14C(i,j,k)-2.*(d13C(i,j,k)+25.)*(1.+d14C(i,j,k)/1000.)
+                          (ocetra(i,j,k,isco212)+safediv)/re14to-1._rp)*1000._rp
+              bigd14C(i,j,k)=d14C(i,j,k)-2._rp*(d13C(i,j,k)+25._rp)*(1._rp+d14C(i,j,k)/1000._rp)
 
             endif
           enddo
@@ -215,42 +225,42 @@ contains
     ! Division by 2 is to account for leap-frog timestepping (but this is not exact)
     do j=1,kpje
       do i=1,kpie
-        if(omask(i,j).gt.0.5) then
+        if(omask(i,j).gt.0.5_rp) then
 
           ! Atmosphere-ocean fluxes
-          bgct2d(i,j,jco2flux) = bgct2d(i,j,jco2flux) + atmflx(i,j,iatmco2)/2.0
-          bgct2d(i,j,jo2flux)  = bgct2d(i,j,jo2flux)  + atmflx(i,j,iatmo2)/2.0
-          bgct2d(i,j,jn2flux)  = bgct2d(i,j,jn2flux)  + atmflx(i,j,iatmn2)/2.0
-          bgct2d(i,j,jn2oflux) = bgct2d(i,j,jn2oflux) + atmflx(i,j,iatmn2o)/2.0
+          bgct2d(i,j,jco2flux) = bgct2d(i,j,jco2flux) + atmflx(i,j,iatmco2)/2.0_rp
+          bgct2d(i,j,jo2flux)  = bgct2d(i,j,jo2flux)  + atmflx(i,j,iatmo2)/2.0_rp
+          bgct2d(i,j,jn2flux)  = bgct2d(i,j,jn2flux)  + atmflx(i,j,iatmn2)/2.0_rp
+          bgct2d(i,j,jn2oflux) = bgct2d(i,j,jn2oflux) + atmflx(i,j,iatmn2o)/2.0_rp
           if (use_extNcycle) then
-            bgct2d(i,j,jnh3flux) = bgct2d(i,j,jnh3flux) + atmflx(i,j,iatmnh3)/2.0
-            bgct2d(i,j,jndepnhx) = bgct2d(i,j,jndepnhx) + ndepnhxflx(i,j)/2.0
+            bgct2d(i,j,jnh3flux) = bgct2d(i,j,jnh3flux) + atmflx(i,j,iatmnh3)/2.0_rp
+            bgct2d(i,j,jndepnhx) = bgct2d(i,j,jndepnhx) + ndepnhxflx(i,j)/2.0_rp
           endif
           ! Particle fluxes between water-column and sediment
-          bgct2d(i,j,jprorca)  = bgct2d(i,j,jprorca)  + carflx_bot(i,j)/2.0
-          bgct2d(i,j,jprcaca)  = bgct2d(i,j,jprcaca)  + calflx_bot(i,j)/2.0
-          bgct2d(i,j,jsilpro)  = bgct2d(i,j,jsilpro)  + bsiflx_bot(i,j)/2.0
+          bgct2d(i,j,jprorca)  = bgct2d(i,j,jprorca)  + carflx_bot(i,j)/2.0_rp
+          bgct2d(i,j,jprcaca)  = bgct2d(i,j,jprcaca)  + calflx_bot(i,j)/2.0_rp
+          bgct2d(i,j,jsilpro)  = bgct2d(i,j,jsilpro)  + bsiflx_bot(i,j)/2.0_rp
           if (.not. use_sedbypass) then
             ! Diffusive fluxes between water-column and sediment
-            bgct2d(i,j,jpodiic)  = bgct2d(i,j,jpodiic)  + sedfluxo(i,j,ipowaic)/2.0
-            bgct2d(i,j,jpodial)  = bgct2d(i,j,jpodial)  + sedfluxo(i,j,ipowaal)/2.0
-            bgct2d(i,j,jpodiph)  = bgct2d(i,j,jpodiph)  + sedfluxo(i,j,ipowaph)/2.0
-            bgct2d(i,j,jpodiox)  = bgct2d(i,j,jpodiox)  + sedfluxo(i,j,ipowaox)/2.0
-            bgct2d(i,j,jpodin2)  = bgct2d(i,j,jpodin2)  + sedfluxo(i,j,ipown2)/2.0
-            bgct2d(i,j,jpodino3) = bgct2d(i,j,jpodino3) + sedfluxo(i,j,ipowno3)/2.0
-            bgct2d(i,j,jpodisi)  = bgct2d(i,j,jpodisi)  + sedfluxo(i,j,ipowasi)/2.0
+            bgct2d(i,j,jpodiic)  = bgct2d(i,j,jpodiic)  + sedfluxo(i,j,ipowaic)/2.0_rp
+            bgct2d(i,j,jpodial)  = bgct2d(i,j,jpodial)  + sedfluxo(i,j,ipowaal)/2.0_rp
+            bgct2d(i,j,jpodiph)  = bgct2d(i,j,jpodiph)  + sedfluxo(i,j,ipowaph)/2.0_rp
+            bgct2d(i,j,jpodiox)  = bgct2d(i,j,jpodiox)  + sedfluxo(i,j,ipowaox)/2.0_rp
+            bgct2d(i,j,jpodin2)  = bgct2d(i,j,jpodin2)  + sedfluxo(i,j,ipown2)/2.0_rp
+            bgct2d(i,j,jpodino3) = bgct2d(i,j,jpodino3) + sedfluxo(i,j,ipowno3)/2.0_rp
+            bgct2d(i,j,jpodisi)  = bgct2d(i,j,jpodisi)  + sedfluxo(i,j,ipowasi)/2.0_rp
           endif
           ! N-deposition, ocean alkalinization, and riverine input fluxes
-          bgct2d(i,j,jndepnoy) = bgct2d(i,j,jndepnoy) + ndepnoyflx(i,j)/2.0
-          bgct2d(i,j,joalk)    = bgct2d(i,j,joalk)    + oalkflx(i,j)/2.0
-          bgct2d(i,j,jirdin)   = bgct2d(i,j,jirdin)   + rivinflx(i,j,irdin)/2.0
-          bgct2d(i,j,jirdip)   = bgct2d(i,j,jirdip)   + rivinflx(i,j,irdip)/2.0
-          bgct2d(i,j,jirsi)    = bgct2d(i,j,jirsi)    + rivinflx(i,j,irsi)/2.0
-          bgct2d(i,j,jiralk)   = bgct2d(i,j,jiralk)   + rivinflx(i,j,iralk)/2.0
-          bgct2d(i,j,jiriron)  = bgct2d(i,j,jiriron)  + rivinflx(i,j,iriron)/2.0
-          bgct2d(i,j,jirdoc)   = bgct2d(i,j,jirdoc)   + rivinflx(i,j,irdoc)/2.0
-          bgct2d(i,j,jirtdoc)  = bgct2d(i,j,jirtdoc)  + rivinflx(i,j,irtdoc)/2.0
-          bgct2d(i,j,jirdet)   = bgct2d(i,j,jirdet)   + rivinflx(i,j,irdet)/2.0
+          bgct2d(i,j,jndepnoy) = bgct2d(i,j,jndepnoy) + ndepnoyflx(i,j)/2.0_rp
+          bgct2d(i,j,joalk)    = bgct2d(i,j,joalk)    + oalkflx(i,j)/2.0_rp
+          bgct2d(i,j,jirdin)   = bgct2d(i,j,jirdin)   + rivinflx(i,j,irdin)/2.0_rp
+          bgct2d(i,j,jirdip)   = bgct2d(i,j,jirdip)   + rivinflx(i,j,irdip)/2.0_rp
+          bgct2d(i,j,jirsi)    = bgct2d(i,j,jirsi)    + rivinflx(i,j,irsi)/2.0_rp
+          bgct2d(i,j,jiralk)   = bgct2d(i,j,jiralk)   + rivinflx(i,j,iralk)/2.0_rp
+          bgct2d(i,j,jiriron)  = bgct2d(i,j,jiriron)  + rivinflx(i,j,iriron)/2.0_rp
+          bgct2d(i,j,jirdoc)   = bgct2d(i,j,jirdoc)   + rivinflx(i,j,irdoc)/2.0_rp
+          bgct2d(i,j,jirtdoc)  = bgct2d(i,j,jirtdoc)  + rivinflx(i,j,irtdoc)/2.0_rp
+          bgct2d(i,j,jirdet)   = bgct2d(i,j,jirdet)   + rivinflx(i,j,irdet)/2.0_rp
 
         endif
       enddo
@@ -338,6 +348,16 @@ contains
       call accsrf(jsrfbromo,ocetra(1,1,1,ibromo),omask,0)
       call accsrf(jbromo_prod,int_chbr3_prod,omask,0)
       call accsrf(jbromo_uv,int_chbr3_uv,omask,0)
+    endif
+    if (use_DOMclasses) then
+      call accsrf(jintexudl,int_exudl,omask,0)
+      call accsrf(jintexudsl,int_exudsl,omask,0)
+      call accsrf(jintexcrl,int_excrl,omask,0)
+      call accsrf(jintexcrsl,int_excrsl,omask,0)
+      call accsrf(jintdocl_rem,int_docl_rem,omask,0)
+      call accsrf(jintdocsl_rem,int_docsl_rem,omask,0)
+      call accsrf(jintdocsr_rem,int_docsr_rem,omask,0)
+      call accsrf(jintdocr_rem,int_docr_rem,omask,0)
     endif
 
     ! Accumulate fluxes due to N-deposition, dust fluxes, and ocean alkalinization
@@ -514,6 +534,18 @@ contains
       call acclyr(jagg_Vrhof,aggregate_diagnostics(1,1,1,kav_rhof_V),pddpo,1)
       call acclyr(jagg_Vpor,aggregate_diagnostics(1,1,1,kav_por_V),pddpo,1)
     endif
+    if (use_DOMclasses) then
+      call acclyr(jdocsl,ocetra(1,1,1,idocsl),pddpo,1)
+      call acclyr(jdocsr,ocetra(1,1,1,idocsr),pddpo,1)
+      call acclyr(jdocr ,ocetra(1,1,1,idocr ),pddpo,1)
+    endif
+    if (use_DOMclasses .and. use_pref_tracers) then
+      call acclyr(jprefdoc,ocetra(1,1,1,iprefdoc),pddpo,1)
+      call acclyr(jprefdocsl,ocetra(1,1,1,iprefdocsl),pddpo,1)
+      call acclyr(jprefdocsr,ocetra(1,1,1,iprefdocsr),pddpo,1)
+      call acclyr(jprefdocr,ocetra(1,1,1,iprefdocr),pddpo,1)
+    endif
+
     ! Accumulate level diagnostics
     if (SUM(jlvlphyto+jlvlgrazer+jlvlphosph+jlvloxygen+jlvliron+             &
          &  jlvlano3+jlvlalkali+jlvlsilica+jlvldic+jlvldoc+jlvlpoc+jlvlcalc+ &
@@ -533,7 +565,9 @@ contains
          &  jlvl_agg_ws+jlvl_dynvis+jlvl_agg_stick+jlvl_agg_stickf+          &
          &  jlvl_agg_dmax+jlvl_agg_avdp+jlvl_agg_avrhop+jlvl_agg_avdC+       &
          &  jlvl_agg_df+jlvl_agg_b+jlvl_agg_Vrhof+jlvl_agg_Vpor+             &
-         &  jlvlnutlim_fe+jlvlnutlim_n+jlvlnutlim_phosph                     &
+         &  jlvlnutlim_fe+jlvlnutlim_n+jlvlnutlim_phosph+                    &
+         &  jlvldocsl+jlvldocsr+jlvldocr+jlvlprefdoc+jlvlprefdocsl+          &
+         &  jlvlprefdocsr+jlvlprefdocr                                       &
          &  ) /= 0) then
       do k=1,kpke
         call bgczlv(pddpo,k,ind1,ind2,wghts)
@@ -649,6 +683,17 @@ contains
           call acclvl(jlvl_agg_Vrhof,aggregate_diagnostics(1,1,1,kav_rhof_V),k,ind1,ind2,wghts)
           call acclvl(jlvl_agg_Vpor,aggregate_diagnostics(1,1,1,kav_por_V),k,ind1,ind2,wghts)
         endif
+        if (use_DOMclasses) then
+          call acclvl(jlvldocsl,ocetra(1,1,1,idocsl),k,ind1,ind2,wghts)
+          call acclvl(jlvldocsr,ocetra(1,1,1,idocsr),k,ind1,ind2,wghts)
+          call acclvl(jlvldocr ,ocetra(1,1,1,idocr ),k,ind1,ind2,wghts)
+        endif
+        if (use_DOMclasses .and. use_pref_tracers) then
+          call acclvl(jlvlprefdoc,ocetra(1,1,1,iprefdoc),k,ind1,ind2,wghts)
+          call acclvl(jlvlprefdocsl,ocetra(1,1,1,iprefdocsl),k,ind1,ind2,wghts)
+          call acclvl(jlvlprefdocsr,ocetra(1,1,1,iprefdocsr),k,ind1,ind2,wghts)
+          call acclvl(jlvlprefdocr,ocetra(1,1,1,iprefdocr),k,ind1,ind2,wghts)
+        endif
       enddo
     endif
 
@@ -713,12 +758,12 @@ contains
       endif
     enddo
 
-    atmflx=0. ! nullifying atm flux here to have zero fluxes for stepwise inventory fluxes
-    ndepnoyflx=0.
-    oalkflx=0.
-    rivinflx=0.
+    atmflx     = 0._rp ! nullifying atm flux here to have zero fluxes for stepwise inventory fluxes
+    ndepnoyflx = 0._rp
+    oalkflx    = 0._rp
+    rivinflx   = 0._rp
     if (use_extNcycle) then
-      ndepnhxflx=0.
+      ndepnhxflx = 0._rp
     endif
 
   end subroutine accfields

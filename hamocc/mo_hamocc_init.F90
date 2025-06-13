@@ -40,13 +40,15 @@ contains
     use mod_grid,       only: plon,plat,depths
     use mod_forcing,    only: use_stream_dust
     use mod_tracers,    only: ntrbgc,ntr,itrbgc,trc
+    use mo_kind,        only: rp
     use mo_control_bgc, only: bgc_namelist,get_bgc_namelist,do_ndep,do_rivinpt,do_oalk,            &
                               do_sedspinup,sedspin_yr_s,sedspin_yr_e,sedspin_ncyc,                 &
                               dtb,dtbgc,io_stdo_bgc,ldtbgc,                                        &
                               ldtrunbgc,ndtdaybgc,with_dmsph,l_3Dvarsedpor,use_M4AGO,              &
                               lkwrbioz_off,do_n2o_coupled,do_nh3_coupled,                          &
                               ocn_co2_type, use_sedbypass, use_BOXATM, use_BROMO,use_extNcycle,    &
-                              use_coupler_ndep,lTO2depremin,use_sediment_quality,ldyn_sed_age
+                              use_coupler_ndep,lTO2depremin,use_sediment_quality,ldyn_sed_age,     &
+                              linit_DOMclasses_sim
     use mo_param1_bgc,  only: ks,init_por2octra_mapping
     use mo_param_bgc,   only: ini_parambgc,claydens,calcdens,calcwei,opaldens,opalwei,ropal,       &
                             & ini_bgctimes,sec_per_day
@@ -63,7 +65,7 @@ contains
     use mo_read_sedpor, only: read_sedpor,sedporfile
     use mo_read_sedqual,only: read_sedqual,sedqualfile
     use mo_clim_swa,    only: ini_swa_clim,swaclimfile
-    use mo_Gdata_read,  only: inidic,inialk,inipo4,inioxy,inino3,inisil,inid13c,inid14c
+    use mo_Gdata_read,  only: inidic,inialk,inipo4,inioxy,inino3,inisil,inid13c,inid14c,inidom
     use mo_intfcblom,   only: alloc_mem_intfcblom,nphys,bgc_dx,bgc_dy,bgc_dp,bgc_rho,omask,        &
                               sedlay2,powtra2,burial2,blom2hamocc,atm2,prorca_mavg2
     use mo_ini_fields,  only: ini_fields_ocean,ini_fields_atm
@@ -79,18 +81,18 @@ contains
     character(len=*), intent(in) :: rstfnm_hamocc ! restart filename.
 
     ! Local variables
-    integer :: i,j,k,l,nt
-    integer :: iounit
-    real    :: sed_por(idm,jdm,ks)         = 0.
-    real    :: sed_POCage_init(idm,jdm,ks) = 0.
-    real    :: prorca_mavg_init(idm,jdm)   = 0.
+    integer  :: i,j,k,l,nt
+    integer  :: iounit
+    real(rp) :: sed_por(idm,jdm,ks)         = 0._rp
+    real(rp) :: sed_POCage_init(idm,jdm,ks) = 0._rp
+    real(rp) :: prorca_mavg_init(idm,jdm)   = 0._rp
 
     namelist /bgcnml/ atm_co2,fedepfile,fedep_source,do_rivinpt,rivinfile,do_ndep,ndepfile,do_oalk,&
          &            do_sedspinup,sedspin_yr_s,sedspin_yr_e,sedspin_ncyc,                         &
-         &            inidic,inialk,inipo4,inioxy,inino3,inisil,inid13c,inid14c,swaclimfile,       &
+         &            inidic,inialk,inipo4,inioxy,inino3,inisil,inid13c,inid14c,inidom,swaclimfile,&
          &            with_dmsph,pi_ph_file,l_3Dvarsedpor,sedporfile,ocn_co2_type,use_M4AGO,       &
          &            do_n2o_coupled,do_nh3_coupled,lkwrbioz_off,lTO2depremin,shelfsea_maskfile,   &
-         &            sedqualfile,ldyn_sed_age
+         &            sedqualfile,ldyn_sed_age,linit_DOMclasses_sim
     !
     ! --- Set io units and some control parameters
     !
@@ -99,7 +101,7 @@ contains
     io_stdo_bgc = lp                   !  standard out.
     dtbgc = nphys*baclin               !  time step length [sec].
     ndtdaybgc=NINT(sec_per_day/dtbgc)  !  time steps per day [No].
-    dtb=1./ndtdaybgc                   !  time step length [days].
+    dtb=1._rp/ndtdaybgc                   !  time step length [days].
     ldtbgc = 0
     ldtrunbgc = 0
 
@@ -164,7 +166,7 @@ contains
       do k=1,2*kk
         do j=1,jj
           do i=1,ii
-            trc(i,j,k,nt)=0.0
+            trc(i,j,k,nt)=0.0_rp
           enddo
         enddo
       enddo
@@ -175,7 +177,7 @@ contains
     do j=1,jj
       do l=1,isp(j)
         do i=max(1,ifp(j,l)),min(ii,ilp(j,l))
-          omask(i,j)=1.
+          omask(i,j)=1._rp
         enddo
       enddo
     enddo
@@ -213,10 +215,10 @@ contains
     ! --- Initialise reading of input data (dust, n-deposition, river, etc.)
     !
     if (.not. use_stream_dust) then
-       call ini_read_fedep(idm,jdm,omask)
+      call ini_read_fedep(idm,jdm,omask)
     end if
     if (.not. use_coupler_ndep) then
-       call ini_read_ndep(idm,jdm)
+      call ini_read_ndep(idm,jdm)
     end if
     call ini_read_rivin(idm,jdm,omask)
     call ini_read_shelfmask(idm,jdm,nbdy,depths,omask)
