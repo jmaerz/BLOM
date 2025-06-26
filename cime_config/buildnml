@@ -97,13 +97,6 @@ def buildnml(case, caseroot, compname):
     comp_interface            = case.get_value("COMP_INTERFACE")
 
 
-    #blom_vcoord = case.get_value("BLOM_VCOORD")
-    if blom_cmip6_settings == True:
-      # Reset values for vertical coordinates and units
-      # in the case of running in CMIP6 compatible mode
-      blom_vcoord = "isopyc_bulkml"
-      blom_unit   = 'cgs'
-
     expect(blom_vcoord == "isopyc_bulkml" or turbclo == "null",
            f"BLOM_VCOORD == {blom_vcoord} and BLOM_TURBULENT_CLOSURE == {turbclo} is not a valid combination")
 
@@ -190,7 +183,7 @@ def buildnml(case, caseroot, compname):
         config['pio_typename_ocn'] = pio_typename_ocn
         config['pio_netcdf_format_ocn'] = pio_netcdf_format_ocn
         config["continue_run"] = "yes" if continue_run else "no"
-        config["blom_cmip6_settings "] = "yes" if blom_cmip6_settings else "no"
+        config["blom_cmip6_settings"] = "yes" if blom_cmip6_settings else "no"
         config['blom_unit'] = blom_unit if blom_unit else "unset"
         config['blom_vcoord'] = blom_vcoord
         config["blom_river_nutrients"] = "yes" if blom_river_nutrients else "no"
@@ -212,6 +205,12 @@ def buildnml(case, caseroot, compname):
         config["is_test"] = "yes" if is_test else "no"
         config["comp_interface"] = comp_interface
         config["hamocc_shelf_res_time"] = "yes" if hamocc_shelf_res_time else "no"
+    
+        if config["blom_cmip6_settings"] == "yes":
+          # Reset values for vertical coordinates and units
+          # in the case of running in CMIP6 compatible mode
+          config["blom_vcoord"] = "isopyc_bulkml"
+          config["blom_unit"]   = 'cgs'
 
         # Set the sinking scheme in iHAMOCC 
         # Note: the following part requires to have set options for no/yes 
@@ -292,7 +291,7 @@ def buildnml(case, caseroot, compname):
 
         groups.append('cwmod')
 
-        if blom_vcoord != "isopyc_bulkml":
+        if config['blom_vcoord'] != "isopyc_bulkml":
             groups.append('vcoord')
             groups.append('ale_regrid_remap')
 
