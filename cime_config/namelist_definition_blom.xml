@@ -4971,6 +4971,7 @@
       <value use_agg="yes">None</value>
     </values>
     <desc>shell production parameter: fraction of CaCO3-shell producing organisms on total POM-production range={0,1}</desc>
+  </entry>
 
   <entry id="ropal">
     <type>real</type>
