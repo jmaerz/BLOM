@@ -658,7 +658,7 @@ contains
     if (use_AGG) then
       zinges  = 0.5_rp        ! dimensionless fraction -assimilation efficiency
       epsher  = 0.9_rp        ! dimensionless fraction -fraction of grazing egested
-    else if (use_WLIN) then
+    else if ((use_WLIN .eqv. .true.) .or. (use_M4AGO .eqv. .true.))  then
       zinges  = 0.7_rp        ! dimensionless fraction -assimilation efficiency
       epsher  = 0.75_rp       ! dimensionless fraction -fraction of grazing egested
     else
@@ -673,11 +673,13 @@ contains
       rcalc  = 14._rp         ! calcium carbonate to organic phosphorous production ratio
       ropal  = 10.5_rp        ! opal to organic phosphorous production ratio
       calmax = 0.20_rp
-    else if (use_WLIN) then
-      rcalc  =  8._rp         ! calcium carbonate to organic phosphorous production ratio
+    else if ((use_WLIN .eqv. .true.) .or. (use_M4AGO .eqv. .true.))  then
+      !rcalc  =  8._rp         ! calcium carbonate to organic phosphorous production ratio
+      calmax =  8._rp/rcar    ! fraction of bulk phytoplankton producing CaCO3 at low Si conc.
       ropal  = 70._rp         ! opal to organic phosphorous production ratio
     else
-      rcalc  = 40._rp         ! iris 40 !calcium carbonate to organic phosphorous production ratio
+      !rcalc  = 40._rp         ! iris 40 !calcium carbonate to organic phosphorous production ratio
+      calmax = 40._rp/rcar    ! fraction of bulk phytoplankton producing CaCO3 at low Si conc.
       ropal  = 30._rp         ! iris 25 !opal to organic phosphorous production ratio
     endif
 
@@ -702,7 +704,7 @@ contains
     integer  :: iounit
 
     namelist /bgcparams/ bkphy,dyphy,bluefix,bkzoo,grazra,spemor,gammap,gammaz,  &
-                         ecan,zinges,epsher,bkopal,rcalc,ropal,                  &
+                         ecan,zinges,epsher,bkopal,ropal,calmax,                 &
                          remido,drempoc,dremopal,dremcalc,dremn2o,dremsul,       &
                          fetune,fesoly,relaxfe,wmin,wmax,wlin,wpoc_const,        &
                          wcal_const,wopal_const,disso_poc,disso_sil,disso_caco3, &
@@ -888,7 +890,7 @@ contains
     use mo_control_bgc, only: dtb
 
     real(rp) :: shear
-    
+
     dustd3   = dustd1**3
     SinkExp  = 0.62_rp
     FractDim = 1.62_rp
@@ -1069,7 +1071,7 @@ contains
       call pinfo_add_entry('rdnit2',      rdnit2)
       call pinfo_add_entry('rdn2o1',      rdn2o1)
       call pinfo_add_entry('rdn2o2',      rdn2o2)
-      call pinfo_add_entry('rcalc',       rcalc)
+      call pinfo_add_entry('calmax',      calmax)
       call pinfo_add_entry('ropal',       ropal)
       call pinfo_add_entry('ctochl',      ctochl)
       call pinfo_add_entry('atten_w',     atten_w)
@@ -1117,7 +1119,7 @@ contains
         call pinfo_add_entry('alow1',       alow1)
         call pinfo_add_entry('alow2',       alow2)
         call pinfo_add_entry('alow3',       alow3)
-        call pinfo_add_entry('calmax',      calmax)
+        call pinfo_add_entry('rcalc',       rcalc)
         call pinfo_add_entry('cellmass',    cellmass)
         call pinfo_add_entry('cellsink',    cellsink)
         call pinfo_add_entry('dustd1',      dustd1)

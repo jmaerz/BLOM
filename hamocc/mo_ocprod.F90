@@ -553,11 +553,12 @@ contains
               ! definition of delcar13/14 for the AGG scheme currently missing
             else
               delsil = min(ropal*export*avsil/(avsil+bkopal),0.5_rp*avsil)
-              delcar = rcalc * export * bkopal/(avsil+bkopal)
+              delcar = calmax * rcar*(1._rp + 0.48_rp*bkphosph/(bkphosph+ocetra(i,j,k,iphosph))) * bkopal/(avsil+bkopal)
               if (use_cisonew) then
-                delcar13 = rcalc * export13 * bkopal/(avsil+bkopal)
-                delcar14 = rcalc * export14 * bkopal/(avsil+bkopal)
+                delcar13 = delcar * export13
+                delcar14 = delcar * export14
               endif
+              delcar = delcar *export
             endif
 
             if(with_dmsph) then
