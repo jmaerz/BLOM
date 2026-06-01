@@ -37,7 +37,7 @@ module mod_cmnfld_routines
    use mod_cmnfld,    only: sls0, slsmfq, slsels, bfsqmn, dbcl82, drcb04, &
                             zrefb04, mldmth, bfsqi, bfsqf, z, bfsql, &
                             nslpx, nslpy, nnslpx, nnslpy, dz, &
-                            mldl82, mldb04, mld, dpml
+                            mldl82, dpmll82, mldb04, dpmlb04, mld, dpml
    use mod_diffusion, only: eitmth_opt, eitmth_gm, &
                             edritp_opt, edritp_large_scale, &
                             ltedtp_opt, ltedtp_neutral
@@ -47,8 +47,6 @@ module mod_cmnfld_routines
    implicit none
 
    private
-
-   real(r8), dimension(1-nbdy:idm+nbdy,1-nbdy:jdm+nbdy) :: dpmll82, dpmlb04
 
    public :: cmnfld_bfsqi_ale, cmnfld1, cmnfld2
 
