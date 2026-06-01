@@ -4197,7 +4197,7 @@ contains
     end do
     !$OMP END PARALLEL DO
 
-    ! checksum of rwo checksums.
+    ! checksum of row checksums.
     crc = crc32(crc_j)
     if (use_TIMER) then
       call xctmr1( 6)
