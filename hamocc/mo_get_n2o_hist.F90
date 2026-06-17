@@ -42,7 +42,7 @@ contains
     integer, save        :: kplyear_old = 0
 
     ! N2O atmospheric concentration
-    ! provided by inpu4MIPs: https://esgf-metagrid.cloud.dkrz.de/search?project=input4MIPs&activeFacets=%7B%22mip_era%22%3A%22CMIP7%22%2C%22dataset_category%22%3A%22GHGConcentrations%22%2C%22variable_id%22%3A%22n2o%22%7D
+    ! provided by input4MIPs: https://esgf-metagrid.cloud.dkrz.de/search?project=input4MIPs&activeFacets=%7B%22mip_era%22%3A%22CMIP7%22%2C%22dataset_category%22%3A%22GHGConcentrations%22%2C%22variable_id%22%3A%22n2o%22%7D
     ! n2o_input4MIPs_GHGConcentrations_CMIP_CR-CMIP-1-0-0_gm_1750-2022.nc
     ! Checksum: 49db1fbe14bdfad9c9b5a78e0b37b50007394f6fb252ff39b622b4c01ef934c4
     data atm_n2o_conc /                                                                            &
