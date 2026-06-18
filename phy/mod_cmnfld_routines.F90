@@ -404,6 +404,14 @@ module mod_cmnfld_routines
             enddo
             bfsqi(i,j,1) = bfsqi(i,j,2)
             bfsqi(i,j,kk+1) = bfsqi(i,j,kk)
+
+            ! Compute the layer BFSQ as the arithmetic mean of the layer
+            ! interface BFSQ.
+            do k = 1, kk - 1
+               bfsql(i,j,k) = .5_r8*(bfsqi(i,j,k) + bfsqi(i,j,k+1))
+            enddo
+            bfsql(i,j,kk) = bfsqi(i,j,kk)
+
          enddo
          enddo
       enddo
@@ -414,6 +422,7 @@ module mod_cmnfld_routines
             write(lp,*) 'cmnfld_bfsqi_ale:'
          endif
          call chksum(bfsqi, kk + 1, halo_ps, 'bfsqi')
+         call chksum(bfsql, kk    , halo_ps, 'bfsql')
       endif
 
    end subroutine cmnfld_bfsqi_ale

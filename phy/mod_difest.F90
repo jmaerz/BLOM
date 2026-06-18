@@ -1380,6 +1380,10 @@ contains
                  nonLocalTrans(k,1))
           end do
 
+          ! Save vertical salinity diffusivity, interpolated from interface to
+          ! layer, in difdia.
+          difdia(i,j,:) = .5_r8*(Ks_kpp(1:kk) + Ks_kpp(2:kk+1))
+
           ! Compute convective velocity cubed [m3 s-3].
           wstar3(i,j) = max(0.,-surfBuoyFlux)*OBLdepth(i,j)
 
