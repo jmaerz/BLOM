@@ -79,7 +79,7 @@ contains
               do nt = 1, ntr
                 trc_1d(k,nt) = trc(i,j,kn,nt)
               enddo
-              nutrc_1d(k) = Kdiff_t(i,j,k)
+              nutrc_1d(k) = Kdiff_s(i,j,k)
             end if
           enddo
 
