@@ -1,5 +1,5 @@
 ! ------------------------------------------------------------------------------
-! Copyright (C) 2021-2025 Mats Bentsen, Mehmet Ilicak, Mariana Vertenstein
+! Copyright (C) 2021-2026 Mats Bentsen, Mehmet Ilicak, Mariana Vertenstein
 !
 ! This file is part of BLOM.
 !

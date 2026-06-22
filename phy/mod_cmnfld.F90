@@ -1,5 +1,5 @@
 ! ------------------------------------------------------------------------------
-! Copyright (C) 2015-2025 Mats Bentsen, Mehmet Ilicak
+! Copyright (C) 2015-2026 Mats Bentsen, Mehmet Ilicak
 !
 ! This file is part of BLOM.
 !
