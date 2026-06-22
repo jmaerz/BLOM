@@ -1886,7 +1886,7 @@
     <category>diffusion</category>
     <group>diffusion</group>
     <values>
-      <value>.true.</value>
+      <value>.false.</value>
     </values>
     <desc>If true, pass scalar Cv parameter to CVMix</desc>
   </entry>
