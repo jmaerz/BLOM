@@ -188,6 +188,8 @@
 ! NDIFF_SURFACE_ALIGN : If true, layers constructed for diffusive flux
 !                       computations are gradually aligned with the surface
 !                       within the mixed layer.
+! CVMIX_CV : Scalar value of CVMix parameter Cv () (f).
+! CVMIX_LSCALAR_CV : If true, pass scalar Cv parameter to CVMix (l)
 
 !===========================================================================
 ! NAMELIST FOR CHANNEL WIDTH MODIFICATIONS
