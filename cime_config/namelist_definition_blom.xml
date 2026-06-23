@@ -1871,6 +1871,25 @@
     <desc>If true, layers constructed for diffusive flux computations are gradually aligned with the surface within the mixed layer</desc>
   </entry>
 
+  <entry id="cvmix_cv">
+    <type>real</type>
+    <category>diffusion</category>
+    <group>diffusion</group>
+    <values>
+      <value>1.2</value>
+    </values>
+    <desc>Scalar value of CVMix parameter Cv</desc>
+  </entry>
+
+  <entry id="cvmix_lscalar_cv">
+    <type>logical</type>
+    <category>diffusion</category>
+    <group>diffusion</group>
+    <values>
+      <value>.false.</value>
+    </values>
+    <desc>If true, pass scalar Cv parameter to CVMix</desc>
+  </entry>
 
   <!-- ========================= -->
   <!-- namelist group: cwmod -->

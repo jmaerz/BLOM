@@ -34,6 +34,7 @@ module mod_difest
   use mod_diffusion,         only: egc, eggam, eglsmn, egmndf, egmxdf, &
                                    egidfq, rhiscf, ri0, bdmc1, bdmc2, bdmldp, &
                                    iwdflg, iwdfac, nubmin, tkepf, lau10f, &
+                                   cvmix_lscalar_cv, cvmix_cv, &
                                    bdmtyp, eddf2d, edsprs, edanis, redi3d, &
                                    rhsctp, edfsmo, smobld, lngmtp, edritp_opt, &
                                    edritp_shear, edritp_large_scale, &
@@ -337,6 +338,11 @@ contains
          Langmuir_mixing_str = langmuir_mixing_opt, &
          Langmuir_entrainment_str = langmuir_entrainment_opt, &
          CVMix_kpp_params_user = KPP_params )
+
+    if (cvmix_lscalar_cv) then
+      call cvmix_put_kpp('lscalar_Cv', .true., KPP_params)
+      call cvmix_put_kpp('Cv', cvmix_cv, KPP_params)
+    endif
 
     !$omp parallel do private(l,i)
     do j = 1,jj
