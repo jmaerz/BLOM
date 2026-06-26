@@ -59,6 +59,7 @@ module mod_diffusion
                 ! [].
       lau10f, & ! Factor applied to 10 m absolute wind entering parameterization
                 ! of Langmuir turbulence enhancement factor [].
+      cvmix_ri_crit, &  ! CVMix parameter Ri_crit [].
       cvmix_cv  ! Scalar value of CVMix parameter Cv [].
    integer :: &
       bdmtyp, & ! Type of background diapycnal mixing. If bdmtyp = 1 the
@@ -186,8 +187,9 @@ module mod_diffusion
    ! Public variables
    public :: egc, eggam, eglsmn, egmndf, egmxdf, egidfq, rhiscf, ri0, &
              bdmc1, bdmc2, bdmldp, iwdflg, iwdfac, nubmin, tkepf, lau10f, &
-             cvmix_cv, bdmtyp, eddf2d, edsprs, edanis, redi3d, rhsctp, tbfile, &
-             edfsmo, smobld, ndiff_surface_align, cvmix_lscalar_cv, lngmtp, &
+             cvmix_ri_crit, cvmix_cv, bdmtyp, eddf2d, edsprs, edanis, redi3d, &
+             rhsctp, tbfile, edfsmo, smobld, &
+             ndiff_surface_align, cvmix_lscalar_cv, lngmtp, &
              eitmth_opt, eitmth_intdif, eitmth_gm, edritp_opt, edritp_shear, &
              edritp_large_scale, edwmth_opt, edwmth_smooth, edwmth_step, &
              ltedtp_opt, ltedtp_layer, ltedtp_neutral, &
@@ -216,9 +218,9 @@ contains
       namelist /diffusion/ &
          egc, eggam, eglsmn, egmndf, egmxdf, egidfq, rhiscf, ri0, &
          bdmc1, bdmc2, bdmldp, iwdflg, iwdfac, nubmin, tkepf, lau10f, &
-         cvmix_cv, bdmtyp, eddf2d, edsprs, edanis, redi3d, rhsctp, tbfile, &
-         edfsmo, smobld, lngmtp, eitmth, edritp, edwmth, ltedtp, &
-         ndiff_surface_align, cvmix_lscalar_cv
+         cvmix_ri_crit, cvmix_cv, bdmtyp, eddf2d, edsprs, edanis, redi3d, &
+         rhsctp, tbfile, edfsmo, smobld, lngmtp, eitmth, edritp, edwmth, &
+         ltedtp, ndiff_surface_align, cvmix_lscalar_cv
 
       ! Read variables in the namelist group 'diffusion'.
       if (mnproc == 1) then
@@ -264,6 +266,7 @@ contains
         call xcbcst(nubmin)
         call xcbcst(tkepf)
         call xcbcst(lau10f)
+        call xcbcst(cvmix_ri_crit)
         call xcbcst(cvmix_cv)
         call xcbcst(bdmtyp)
         call xcbcst(eddf2d)
@@ -300,7 +303,8 @@ contains
          write (lp,*) '  nubmin = ', nubmin
          write (lp,*) '  tkepf  = ', tkepf
          write (lp,*) '  lau10f = ', lau10f
-         write (lp,*) '  cvmix_cv = ', cvmix_cv
+         write (lp,*) '  cvmix_ri_crit = ', cvmix_ri_crit
+         write (lp,*) '  cvmix_cv      = ', cvmix_cv
          write (lp,*) '  bdmtyp = ', bdmtyp
          write (lp,*) '  eddf2d = ', eddf2d
          write (lp,*) '  edsprs = ', edsprs

@@ -1871,6 +1871,16 @@
     <desc>If true, layers constructed for diffusive flux computations are gradually aligned with the surface within the mixed layer</desc>
   </entry>
 
+  <entry id="cvmix_ri_crit">
+    <type>real</type>
+    <category>diffusion</category>
+    <group>diffusion</group>
+    <values>
+      <value>.3</value>
+    </values>
+    <desc>CVMix parameter Ri_crit</desc>
+  </entry>
+
   <entry id="cvmix_cv">
     <type>real</type>
     <category>diffusion</category>
