@@ -34,7 +34,7 @@ module mod_difest
   use mod_diffusion,         only: egc, eggam, eglsmn, egmndf, egmxdf, &
                                    egidfq, rhiscf, ri0, bdmc1, bdmc2, bdmldp, &
                                    iwdflg, iwdfac, nubmin, tkepf, lau10f, &
-                                   cvmix_lscalar_cv, cvmix_cv, &
+                                   cvmix_ri_crit, cvmix_lscalar_cv, cvmix_cv, &
                                    bdmtyp, eddf2d, edsprs, edanis, redi3d, &
                                    rhsctp, edfsmo, smobld, lngmtp, edritp_opt, &
                                    edritp_shear, edritp_large_scale, &
@@ -290,7 +290,7 @@ contains
          KPP_Ri_zero = ri0, &
          KPP_exp = 3.0)
     !  CVmix_kpp_params_in => CVmix_kpp_params_user
-    !       call CVMix_init_kpp(Ri_crit=0.3, &
+    !       call CVMix_init_kpp(Ri_crit=cvmix_ri_crit, &
     !             minOBLdepth=minOBLdepth, &
     !             minVtsqr=1e-10, &
     !             vonKarman=0.4, &
@@ -306,7 +306,7 @@ contains
     !             Langmuir_mixing_str=Langmuir_mixing_str, &
     !             Langmuir_entrainment_str=Langmuir_entrainment_str, &
     !             CVMix_kpp_params_user=KPP_params )
-    !       call CVMix_init_kpp(Ri_crit=0.3, &
+    !       call CVMix_init_kpp(Ri_crit=cvmix_ri_crit, &
     !             minOBLdepth=minOBLdepth, &
     !             minVtsqr=1e-10, &
     !             vonKarman=0.4, &
@@ -322,7 +322,7 @@ contains
     !             Langmuir_mixing_str=Langmuir_mixing_str, &
     !             Langmuir_entrainment_str=Langmuir_entrainment_str, &
     !             CVMix_kpp_params_user=KPP_params )
-    call CVMix_init_kpp(Ri_crit = 0.3, &
+    call CVMix_init_kpp(Ri_crit = cvmix_ri_crit, &
          minOBLdepth = minOBLdepth, &
          minVtsqr = 1e-10, &
          vonKarman = 0.4, &
