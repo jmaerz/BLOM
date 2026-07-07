@@ -44,20 +44,6 @@
     </phase>
   </test>
 
-  <test name="SMS_D_Ld1.T62_tn14_wtn14nw.NOINYOC_WW3.betzy_gnu.blom-wavice">
-    <phase name="RUN">
-      <status>FAIL</status>
-      <issue>NorESMhub/NorESM_CICE#9</issue>
-    </phase>
-  </test>
-
-  <test name="ERS_Ld3.T62_tn14_wtn14nw.NOINY_WW3.betzy_gnu.blom-wavice">
-    <phase name="RUN">
-      <status>FAIL</status>
-      <issue>NorESMhub/NorESM_CICE#9</issue>
-    </phase>
-  </test>
-
   <!-- aux_hamocc_noresm test suite failures -->
 
   <test name="SMS_D_Ld1.T62_tn14.NOINYOC.betzy_intel.blom-hamocc-hamocc6">
