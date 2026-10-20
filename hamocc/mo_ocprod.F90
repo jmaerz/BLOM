@@ -65,7 +65,7 @@ contains
     use mod_xc,           only: mnproc
     use mo_kind,          only: rp
     use mo_carbch,        only: ocetra,satoxy,hi,co2star,nutlim_diag,inutlim_fe,inutlim_phosph,    &
-                              & inutlim_n,zeu_nutlim_diag
+                              & inutlim_n,zeu_nutlim_diag,zeu_diag,izeu_perc,izeu_abs
     use mo_param_bgc,     only: drempoc,drempoc_anaerob,bkox_drempoc,dremn2o,dremopal,dremsul,     &
                                 dyphy,ecan,epsher,fesoly,                                          &
                                 gammap,gammaz,grami,grazra,pi_alpha,phytomi,                       &
@@ -141,7 +141,7 @@ contains
     real(rp) :: dtr,dz
     real(rp) :: o2lim ! O2 limitation of ammonification (POC remin)
     real(rp) :: tiny_val = epsilon(1._rp)
-    real(rp) :: zeu
+    real(rp) :: zeu,zeu_abs,zeu_perc
     ! DOM
     real(rp) :: exudsl,excdocsl,docremsl,docremsr,docremr,doclimfct
     ! cisonew
@@ -313,11 +313,13 @@ contains
     !$OMP  ,pocrem13,pocrem14,docrem13,docrem14                           &
     !$OMP  ,growth_co2,phygrowth                                          &
     !$OMP  ,bro_beta,bro_uv,ano3up_inh,nutlim,anh4lim,nlim,grlim          &
-    !$OMP  ,nh4uptfrac,i,k,zeu)
+    !$OMP  ,nh4uptfrac,i,k,zeu,zeu_perc,zeu_abs)
 
     loop1: do j = 1,kpje
       do i = 1,kpie
-        zeu  = 0._rp
+        zeu       = 0._rp
+        zeu_abs   = 0._rp
+        zeu_perc  = 0._rp
         do k = 1,kpke
 
           if(pddpo(i,j,k) > dp_min .and. omask(i,j) > 0.5_rp) then
@@ -845,17 +847,26 @@ contains
               zeu_nutlim_diag(i,j,inutlim_n)      = zeu_nutlim_diag(i,j,inutlim_n)                 &
                                                   & + nutlim_diag(i,j,k,inutlim_n)*dz
             endif
-
+            if (strahl(i,j)*abs_bgc(i,j,k) >= 0.01_rp*strahl(i,j)) then
+               zeu_perc = zeu_perc + dz
+            endif
+            if (strahl(i,j)*abs_bgc(i,j,k) >= 0.00219_rp) then
+               ! Theoretical minimum light requirement for photosynthesis
+               ! 0.01 mu mol photons m-2 s-1, PAR conversion factor 0.219 to W m-2
+               zeu_abs = zeu_abs + dz
+            endif
 
           endif        ! pddpo(i,j,k) > dp_min
         enddo        ! loop over vertical dimension
-        
+
         if (zeu > dp_min) then
           zeu_nutlim_diag(i,j,inutlim_fe)    = zeu_nutlim_diag(i,j,inutlim_fe)    /zeu
           zeu_nutlim_diag(i,j,inutlim_phosph)= zeu_nutlim_diag(i,j,inutlim_phosph)/zeu
           zeu_nutlim_diag(i,j,inutlim_n)     = zeu_nutlim_diag(i,j,inutlim_n)     /zeu
         endif
 
+        zeu_diag(i,j,izeu_perc) = zeu_perc
+        zeu_diag(i,j,izeu_abs)  = zeu_abs
       enddo        ! kpie
     enddo loop1  ! kpje
     !$OMP END PARALLEL DO

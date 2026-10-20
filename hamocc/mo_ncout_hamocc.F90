@@ -240,7 +240,8 @@ contains
                               LVL_NUTLIM_FE,LVL_NUTLIM_N,LVL_NUTLIM_PHOSPH,                        &
                               jlvlnutlim_fe,jlvlnutlim_n,jlvlnutlim_phosph,                        &
                               ZEU_NUTLIM_FE,ZEU_NUTLIM_N,ZEU_NUTLIM_PHOSPH,                        &
-                              jzeunutlim_fe,jzeunutlim_n,jzeunutlim_phosph
+                              jzeunutlim_fe,jzeunutlim_n,jzeunutlim_phosph,                        &
+                              ZEU_PERC,ZEU_ABS,jzeu_perc,jzeu_abs
     use mo_param_bgc,   only: c14fac,param4nc,nentries,controls4nc,centries
     use mo_kind,        only: bgc_fnmlen,rp
     use mo_sedmnt,      only: sed_porosity,dzs
@@ -704,6 +705,8 @@ contains
     call wrtsrf(jzeunutlim_fe(iogrp),ZEU_NUTLIM_FE(iogrp),rnacc,              0._rp,cmpflg,'zeu_nlim_fe')
     call wrtsrf(jzeunutlim_phosph(iogrp), ZEU_NUTLIM_PHOSPH(iogrp), rnacc,    0._rp,cmpflg,'zeu_nlim_po4')
     call wrtsrf(jzeunutlim_n(iogrp), ZEU_NUTLIM_N(iogrp), rnacc,              0._rp,cmpflg,'zeu_nlim_n')
+    call wrtsrf(jzeu_perc(iogrp),    ZEU_PERC(iogrp),     rnacc,              0._rp,cmpflg,'zeu_perc')
+    call wrtsrf(jzeu_abs(iogrp),     ZEU_ABS(iogrp),      rnacc,              0._rp,cmpflg,'zeu_abs')
     if (.not. use_sedbypass) then
       call wrtsrf(jsediffic(iogrp),    FLX_SEDIFFIC(iogrp), rnacc*1.e3_rp/dtbgc,0._rp,cmpflg,'sedfdic')
       call wrtsrf(jsediffal(iogrp),    FLX_SEDIFFAL(iogrp), rnacc*1.e3_rp/dtbgc,0._rp,cmpflg,'sedfalk')
@@ -1153,6 +1156,8 @@ contains
     call inisrf(jzeunutlim_fe(iogrp),0._rp)
     call inisrf(jzeunutlim_phosph(iogrp),0._rp)
     call inisrf(jzeunutlim_n(iogrp),0._rp)
+    call inisrf(jzeu_perc(iogrp),0._rp)
+    call inisrf(jzeu_abs(iogrp),0._rp)
     if (.not. use_sedbypass) then
       call inisrf(jsediffic(iogrp),0._rp)
       call inisrf(jsediffal(iogrp),0._rp)
@@ -1643,7 +1648,7 @@ contains
                               SDM_qual_a,SDM_qual_k,SDM_qual_app,SDM_ssso12_age,SDM_MAVG_prorca,   &
                               sdm_rem_aerob,sdm_rem_denit,sdm_rem_sulf,                            &
                               LVL_NUTLIM_FE,LVL_NUTLIM_N,LVL_NUTLIM_PHOSPH,                        &
-                              ZEU_NUTLIM_FE,ZEU_NUTLIM_N,ZEU_NUTLIM_PHOSPH
+                              ZEU_NUTLIM_FE,ZEU_NUTLIM_N,ZEU_NUTLIM_PHOSPH,ZEU_PERC,ZEU_ABS
 
 
     ! Arguments
@@ -1840,7 +1845,11 @@ contains
          &   'Euphotic zone nutrient limitation PO4 time fraction',' ','-',0)
     call ncdefvar3d(ZEU_NUTLIM_N(iogrp),cmpflg,'p','zeu_nlim_n',                &
          &   'Euphotic zone nutrient limitation N time fraction',' ','-',0)
-
+    call ncdefvar3d(ZEU_PERC(iogrp),cmpflg,'p','zeu_perc',                      &
+         &   'Euphotic zone depth for 1% of incoming PAR',' ','m',0)
+    call ncdefvar3d(ZEU_ABS(iogrp),cmpflg,'p','zeu_abs',                        &
+         &   'Euphotic zone depth for theoretical minimum light requirement for photosynthesis',&
+         &   ' ','m',0)
     call ncdefvar3d(SRF_N2OFX(iogrp),cmpflg,'p','n2oflux',                      &
          &   'N2O flux',' ','mol N2O m-2 s-1',0)
     if (.not. use_sedbypass) then

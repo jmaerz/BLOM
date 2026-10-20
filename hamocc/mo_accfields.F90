@@ -49,7 +49,8 @@ contains
                                 omegaa,omegac,fco2,pco2,xco2,pco2_gex,satoxy,sedfluxo,sedfluxb,    &
                                 kwco2a,co2sol,pn2om,co213fxd,co213fxu,co214fxd,co214fxu,           &
                                 natco3,nathi,natomegaa,natomegac,natpco2,pnh3,                     &
-                                nutlim_diag,inutlim_fe,inutlim_n,inutlim_phosph,zeu_nutlim_diag
+                                nutlim_diag,inutlim_fe,inutlim_n,inutlim_phosph,zeu_nutlim_diag,   &
+                                zeu_diag,izeu_abs,izeu_perc
     use mo_biomod,        only: bsiflx_bot,bsiflx0100,bsiflx0500,bsiflx1000,                       &
                                 bsiflx2000,bsiflx4000,calflx_bot,calflx0100,calflx0500,            &
                                 calflx1000,calflx2000,calflx4000,carflx_bot,carflx0100,            &
@@ -148,7 +149,7 @@ contains
                                 jsed_mavg_prorca,jsdm_remin_sulf,jsdm_qual_a,jsdm_qual_k,          &
                                 jsdm_qual_app,jsdm_ssso12_age,jsdm_rem_aerob,jsdm_rem_denit,       &
                                 jsdm_rem_sulf,jlvlnutlim_fe,jlvlnutlim_n,jlvlnutlim_phosph,        &
-                                jzeunutlim_fe,jzeunutlim_phosph,jzeunutlim_n
+                                jzeunutlim_fe,jzeunutlim_phosph,jzeunutlim_n,jzeu_perc,jzeu_abs
     use mo_control_bgc,   only: io_stdo_bgc,dtb,use_BROMO,use_AGG,use_WLIN,use_natDIC,             &
                                 use_CFC,use_sedbypass,use_cisonew,use_BOXATM,use_M4AGO,            &
                                 use_extNcycle,use_pref_tracers,use_shelfsea_res_time,              &
@@ -399,6 +400,8 @@ contains
     call accsrf(jzeunutlim_fe,zeu_nutlim_diag(1,1,inutlim_fe),omask,0)
     call accsrf(jzeunutlim_phosph,zeu_nutlim_diag(1,1,inutlim_phosph),omask,0)
     call accsrf(jzeunutlim_n,zeu_nutlim_diag(1,1,inutlim_n),omask,0)
+    call accsrf(jzeu_perc,zeu_diag(1,1,izeu_perc),omask,0)
+    call accsrf(jzeu_abs,zeu_diag(1,1,izeu_abs),omask,0)
     call accsrf(jsrfco3,co3(1,1,1),omask,0)
     call accsrf(jintpoc,intpoc,omask,0)
     call accsrf(jsrfco3satarag,srfco3satarag,omask,0)

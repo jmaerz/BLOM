@@ -202,6 +202,7 @@ module mo_bgcmean
        & LVL_PREFDOCR  =0    ,                                            &
        & LVL_NUTLIM_FE =0    ,LVL_NUTLIM_N  =0    ,LVL_NUTLIM_PHOSPH=0 ,  &
        & ZEU_NUTLIM_FE =0    ,ZEU_NUTLIM_N  =0    ,ZEU_NUTLIM_PHOSPH=0 ,  &
+       & ZEU_PERC      =0    ,ZEU_ABS       =0                         ,  &
        ! extNcycle LVL
        & LVL_ANH4      =0    ,LVL_ANO2      =0    ,                       &
        & LVL_nitr_NH4  =0    ,LVL_nitr_NO2  =0    ,LVL_nitr_N2O_prod =0,  &
@@ -336,6 +337,7 @@ module mo_bgcmean
        & LVL_DOC13         ,LVL_CALC13        ,                           &
        & LVL_NUTLIM_FE     ,LVL_NUTLIM_N      ,LVL_NUTLIM_PHOSPH ,        &
        & ZEU_NUTLIM_FE     ,ZEU_NUTLIM_N      ,ZEU_NUTLIM_PHOSPH ,        &
+       & ZEU_PERC          ,ZEU_ABS                              ,        &
        & LVL_ANH4          ,LVL_ANO2          ,                           &
        & LVL_nitr_NH4      ,LVL_nitr_NO2      ,LVL_nitr_N2O_prod ,        &
        & LVL_nitr_NH4_OM   ,LVL_nitr_NO2_OM   ,LVL_denit_NO3     ,        &
@@ -482,12 +484,14 @@ module mo_bgcmean
        &          jzeunutlim_fe      = 0 ,                                &
        &          jzeunutlim_phosph  = 0 ,                                &
        &          jzeunutlim_n       = 0 ,                                &
+       &          jzeu_perc          = 0 ,                                &
+       &          jzeu_abs           = 0 ,                                &
        &          jphyc_200          = 0 ,                                &
        &          jph_200            = 0 ,                                &
        &          jco3_200           = 0 ,                                &
        &          jco3satarag_200    = 0 ,                                &
        &          jo2_200            = 0 ,                                &
-       &          jo2min             = 0 
+       &          jo2min             = 0
 
   integer, dimension(nbgcmax) ::                                          &
        &          jsediffic  = 0 ,                                        &
@@ -1006,6 +1010,10 @@ CONTAINS
       jzeunutlim_phosph(n)=i_bsc_m2d*min(1,ZEU_NUTLIM_PHOSPH(n))
       if (ZEU_NUTLIM_N(n) > 0) i_bsc_m2d=i_bsc_m2d+1
       jzeunutlim_N(n)=i_bsc_m2d*min(1,ZEU_NUTLIM_N(n))
+      if (ZEU_PERC(n) > 0) i_bsc_m2d=i_bsc_m2d+1
+      jzeu_perc(n)=i_bsc_m2d*min(1,ZEU_PERC(n))
+      if (ZEU_ABS(n) > 0) i_bsc_m2d=i_bsc_m2d+1
+      jzeu_abs(n)=i_bsc_m2d*min(1,ZEU_ABS(n))
       if (PHYC_200(n) > 0) i_bsc_m2d=i_bsc_m2d+1
       jphyc_200(n)=i_bsc_m2d*min(1,PHYC_200(n))
       if (PH_200(n) > 0) i_bsc_m2d=i_bsc_m2d+1

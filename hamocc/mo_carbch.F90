@@ -73,6 +73,7 @@ module mo_carbch
   real(rp), dimension (:,:,:),   allocatable, public :: sedfluxb
   real(rp), dimension (:,:,:,:), allocatable, public :: nutlim_diag
   real(rp), dimension (:,:,:),   allocatable, public :: zeu_nutlim_diag
+  real(rp), dimension (:,:,:),   allocatable, public :: zeu_diag
 
   real(rp), dimension (:,:),     allocatable, public :: fco2
   real(rp), dimension (:,:),     allocatable, public :: pco2
@@ -102,6 +103,9 @@ module mo_carbch
   integer, parameter, public :: inutlim_phosph = 1
   integer, parameter, public :: inutlim_n      = 2
   integer, parameter, public :: inutlim_fe     = 3
+
+  integer, parameter, public :: izeu_perc      = 1
+  integer, parameter, public :: izeu_abs       = 2
 
 contains
 
@@ -266,6 +270,16 @@ contains
     allocate (zeu_nutlim_diag(kpie,kpje,3),stat=errstat)
     if(errstat.ne.0) stop 'not enough memory zeu_nutlim_diag'
     zeu_nutlim_diag(:,:,:) = 0.0_rp
+
+    if (mnproc.eq.1) then
+      write(io_stdo_bgc,*)'Memory allocation for variable zeu_diag ..'
+      write(io_stdo_bgc,*)'First dimension    : ',kpie
+      write(io_stdo_bgc,*)'Second dimension   : ',kpje
+      write(io_stdo_bgc,*)'Third dimension    : ',2     ! number of depth horizons to be calculated as zeu
+    endif
+    allocate (zeu_diag(kpie,kpje,2),stat=errstat)
+    if(errstat.ne.0) stop 'not enough memory zeu_diag'
+    zeu_diag(:,:,:) = 0.0_rp
 
     if (mnproc.eq.1) then
       write(io_stdo_bgc,*)'Memory allocation for variable satn2o ...'

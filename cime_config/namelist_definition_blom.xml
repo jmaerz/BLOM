@@ -9170,9 +9170,35 @@
       <value>0,2,2</value>
       <value is_test="yes">4,2,2</value>
       <value is_test="yes" empty_hist="yes">0,0,0</value>
-      <value hamocc_output_size="spinup">0,2</value>
+      <value hamocc_output_size="spinup">0,0</value>
     </values>
     <desc>Euphotic zone nutrient limitation PO4 - time fraction</desc>
+  </entry>
+
+  <entry id="zeu_perc">
+    <type>integer(3)</type>
+    <category>diabgc</category>
+    <group>diabgc</group>
+    <values>
+      <value>0,2,2</value>
+      <value is_test="yes">4,2,2</value>
+      <value is_test="yes" empty_hist="yes">0,0,0</value>
+      <value hamocc_output_size="spinup">0,0</value>
+    </values>
+    <desc>Euphotic zone depth for 1% incoming PAR (m)</desc>
+  </entry>
+
+  <entry id="zeu_abs">
+    <type>integer(3)</type>
+    <category>diabgc</category>
+    <group>diabgc</group>
+    <values>
+      <value>0,2,2</value>
+      <value is_test="yes">4,2,2</value>
+      <value is_test="yes" empty_hist="yes">0,0,0</value>
+      <value hamocc_output_size="spinup">0,2</value>
+    </values>
+    <desc>Euphotic zone depth for theoretical photosynthesis (m)</desc>
   </entry>
 
   <entry id="lvl_grazer">
