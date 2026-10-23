@@ -191,6 +191,7 @@ contains
     phosy3d  (:,:,:) = 0._rp
     nutlim_diag(:,:,:,:) = 0._rp
     zeu_nutlim_diag(:,:,:) = 0._rp
+    zeu_diag(:,:,:) = 0._rp
 
     if (use_DOMclasses) then
       int_exudl    (:,:) = 0._rp
@@ -847,12 +848,12 @@ contains
               zeu_nutlim_diag(i,j,inutlim_n)      = zeu_nutlim_diag(i,j,inutlim_n)                 &
                                                   & + nutlim_diag(i,j,k,inutlim_n)*dz
             endif
-            if (strahl(i,j)*abs_bgc(i,j,k) >= 0.01_rp*strahl(i,j)) then
+            if ((strahl(i,j)*abs_bgc(i,j,k)) >= (0.01_rp*strahl(i,j))) then
                zeu_perc = zeu_perc + dz
             endif
-            if (strahl(i,j)*abs_bgc(i,j,k) >= 0.00219_rp) then
+            if ((strahl(i,j)*abs_bgc(i,j,k)) >= 0.00219_rp) then
                ! Theoretical minimum light requirement for photosynthesis
-               ! 0.01 mu mol photons m-2 s-1, PAR conversion factor 0.219 to W m-2
+               ! 0.01 mu mol photons m-2 s-1, PAR conversion factor 0.219 W m-2/mu mol photons m-2 s-1
                zeu_abs = zeu_abs + dz
             endif
 
@@ -863,10 +864,10 @@ contains
           zeu_nutlim_diag(i,j,inutlim_fe)    = zeu_nutlim_diag(i,j,inutlim_fe)    /zeu
           zeu_nutlim_diag(i,j,inutlim_phosph)= zeu_nutlim_diag(i,j,inutlim_phosph)/zeu
           zeu_nutlim_diag(i,j,inutlim_n)     = zeu_nutlim_diag(i,j,inutlim_n)     /zeu
+          zeu_diag(i,j,izeu_perc)            = zeu_perc
+          zeu_diag(i,j,izeu_abs)             = zeu_abs
         endif
 
-        zeu_diag(i,j,izeu_perc) = zeu_perc
-        zeu_diag(i,j,izeu_abs)  = zeu_abs
       enddo        ! kpie
     enddo loop1  ! kpje
     !$OMP END PARALLEL DO
